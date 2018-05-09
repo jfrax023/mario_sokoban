@@ -1,0 +1,6 @@
+#txt file
+project.txt
+#cmake dir
+cmake-build-debug/*
+# ide dir
+.idea/*
