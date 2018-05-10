@@ -19,7 +19,11 @@ find_package(SDL_image)
 if(!SDL_IMAGE_FOUND)
     message(FATAL_ERROR "Lib SDL_image not found")
 endif ()
+# copy level
 # Included directories from a path variable
 include_directories(${SDL_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_DIRS})
 # Included executable by using a defined variable set at top
-add_executable(mario_sokoban main.c ${src_files})
+add_executable(mario_sokoban main.c include/windows.h include/utilities.h src/windows.c include/events.h src/events.c src/error_helper.c include/error_helper.h)
+
+# On link notre librairie avec notre projet le nom de la lib et encore fournit via une variable mise à disposition
+target_link_libraries(mario_sokoban ${SDL_LIBRARY} ${SDL_IMAGE_LIBRARIES})
