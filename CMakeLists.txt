@@ -20,6 +20,8 @@ if(!SDL_IMAGE_FOUND)
     message(FATAL_ERROR "Lib SDL_image not found")
 endif ()
 # copy level
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/easy/jungle.txt
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/easy/)
 # Included directories from a path variable
 include_directories(${SDL_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_DIRS})
 # Included executable by using a defined variable set at top
