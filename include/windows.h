@@ -12,7 +12,7 @@
 #define MARIO_SOKOBAN_WINDOWS_H
 
 #include <SDL/SDL.h>
-
+//----------------------------------------------------------------------------------------------------------------------
 /**
  * Set a name and background color .
  * @param sRootWindow SDL_Surface The main window .
@@ -44,4 +44,6 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]);
  * @param flipFlag int A flag corresponding to tell if we need to SDL_Flip this surface or not, 0 dont flip 1 flip .
  */
 void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag);
+
+//----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_WINDOWS_H

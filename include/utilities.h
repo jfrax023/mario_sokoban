@@ -2,13 +2,16 @@
  * utilities.h is a header where we defined some #define and structure for this programme .
  * Created by lilith on 10/05/18.
  * --- Define ---
- * - ROOT_WINDOW_*ARG*  : Define for a main window like height and width .
- * - *ELEMENT*_PATH     : Define path for an img called élément of the game like caisse.jpg coresponding to the box etc.
- * - LEVEL_*MODE*_DIR   : Define path to access at levels organised by difficulty .
+ * - ROOT_WINDOW_*ARG*   : Define for a main window like height and width .
+ * - *ELEMENT*_PATH      : Define path for an img called élément of the game like caisse.jpg coresponding to the box etc.
+ * - LEVEL_*MODE*_DIR    : Define path to access at levels organised by difficulty .
+ * - LVL_*MODE*_NB_FRAME : Define the number of frame this mode have like easy have 12 for width and 12 for height
+ *                          we can just made 12*12 to know how much frame this mode have .
  */
 
 #ifndef MARIO_SOKOBAN_UTILITIES_H
 #define MARIO_SOKOBAN_UTILITIES_H
+//----------------------------------------------------------------------------------------------------------------------
 
 // Data for main window called sRootWindow in main
 #define ROOT_WINDOW_WIDTH 896
@@ -33,5 +36,10 @@
 #define LEVEL_MEDIUM_DIR "levels/medium/"
 #define LEVEL_HARD_DIR = "levels/hard/"
 
+// number frame for level difficuty
+#define LVL_EASY_NB_FRAME (12*12)
+#define LVL_MEDIUM_NB_FRAME (16*16)
+#define LVL_HARD_NB_FRAME (20*20)
 
+//----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_UTILITIES_H

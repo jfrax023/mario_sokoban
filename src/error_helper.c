@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
 
+//----------------------------------------------------------------------------------------------------------------------
 /**
  * Check if the sruface is null and raise an error and exit program
  * @param toCheck The surface will checking
@@ -18,3 +19,4 @@ void checkIfSurfaceIsNull(SDL_Surface *toCheck, char message[]){
     }
 }
 
+//----------------------------------------------------------------------------------------------------------------------

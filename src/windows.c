@@ -11,8 +11,7 @@
 #include "events.h"
 #include <string.h>
 
-
-
+//----------------------------------------------------------------------------------------------------------------------
 /**
  * Set a name and a background color to main window .
  * @param sRootWindow SDL_Surface The main window .
@@ -84,3 +83,5 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]){
     // free memory
     SDL_FreeSurface(sImgMenu);
 }
+
+//----------------------------------------------------------------------------------------------------------------------

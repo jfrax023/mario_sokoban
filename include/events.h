@@ -9,7 +9,7 @@
 
 #ifndef MARIO_SOKOBAN_EVENTS_H
 #define MARIO_SOKOBAN_EVENTS_H
-
+//----------------------------------------------------------------------------------------------------------------------
 /**
  * Simple function to put the programme in pause mode until a SDL_QUIT event detected .
  */
@@ -24,4 +24,5 @@ void pause();
  */
 int getUserChoice(int pFlag);
 
+//----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_EVENTS_H
