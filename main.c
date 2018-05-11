@@ -11,8 +11,10 @@
 int main(int argc, char *argv[]) {
     // variable definition
     SDL_Surface *sRootWindow = NULL;
-    SDL_Surface *sImgMenu = NULL;
-    SDL_Rect imgMenuPosition;
+    //SDL_Surface *sImgMenu = NULL;
+    int userMenuChoice = 0;
+    int aBgColor[] = {255, 255, 255};
+    //SDL_Rect imgMenuPosition;
 
     // Initialisation de SDL
     SDL_Init(SDL_INIT_VIDEO);
@@ -24,22 +26,32 @@ int main(int argc, char *argv[]) {
     // check
     checkIfSurfaceIsNull(sRootWindow, "Cannot create window ");
     /* End main window creation ca use this after*/
-    // create menu surface
-    sImgMenu = IMG_Load(MENU_PATH);
-    checkIfSurfaceIsNull(sImgMenu, "Image not found ");
-
     // set a bg color and a name to the main window
     setNameAndBg(sRootWindow);
-    // Center the menu and blit him
-    // set img of menu to sImgMenu surface
-    setImageInWindow(sRootWindow, sImgMenu, &imgMenuPosition, 1);
-    // update window
-    SDL_Flip(sRootWindow);
+    createMenu(sRootWindow, &userMenuChoice, MENU_PATH);
+    // we clean window but dont flip them at the moment
+    cleanWindow(sRootWindow, aBgColor, 0);
 
-    // pause
+    // The first menu as been displayed and the user have choose now we can move to the second menu or on edition level
+    if(userMenuChoice == 1){
+        /* seconde menu*/
+        // remove value of userMenuChoice because we reuse it
+        userMenuChoice = 0;
+        createMenu(sRootWindow, &userMenuChoice, LVL_MENU_PATH);
+    } else{
+        /* edition*/
+        SDL_Quit();
+        exit(EXIT_SUCCESS);
+    }
+    cleanWindow(sRootWindow, aBgColor, 1);
+    /*      END MENU SELECTION      */
+
+    /*
+     MAP CODE
+     */
+
     pause();
-    // free memory
-    SDL_FreeSurface(sImgMenu);
+
     SDL_Quit();
     return EXIT_SUCCESS;
 }
