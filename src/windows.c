@@ -103,8 +103,9 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]){
  * @param pRootWindow SDL_Surface An pointer to main window .
  * @param current int An pointer to the variable current to manage while .
  * @param pMenuChoice int An pointer to the array menuChoice .
+ * @param inGame in Bool 0 tell not in game 1 game is started .
  */
-void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice){
+void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice, int inGame){
     // content size
     int size = (int) strlen(pMap->content);
     int color[3] = {255, 255, 255};
@@ -174,8 +175,12 @@ void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuCho
     } // end for
 
     SDL_Flip(pRootWindow);
-    // call event manager to define the next step
-    mapMenuEventManager(pMap, current, pMenuChoice);
+    if(inGame){
+        // call event manger for game event
+    } else{
+        // call event manager to define the next step in menu functionality
+        mapMenuEventManager(pMap, current, pMenuChoice);
+    }
     // clean
     cleanWindow(pRootWindow, color, 1);
     // free surface

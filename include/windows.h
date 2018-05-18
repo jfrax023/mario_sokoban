@@ -61,8 +61,9 @@ void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag);
  * @param pRootWindow SDL_Surface An pointer to main window .
  * @param current int An pointer to the variable current to manage while .
  * @param pMenuChoice int An pointer to the array menuChoice .
+ * @param inGame in Bool 0 tell not in game 1 game is started .
  */
-void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice);
+void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice, int inGame);
 
 
 void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]);

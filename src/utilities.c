@@ -96,7 +96,7 @@ void createMapMenu(SDL_Surface *sRootWindow, Map *MapToPlay, Map *PS_tmpMap, int
         while(stayIn){
             // first time
             if(current != -1){
-                displayMap(&PS_tmpMap[current], sRootWindow, &current, menuChoice);
+                displayMap(&PS_tmpMap[current], sRootWindow, &current, menuChoice, 0);
             } else{
                 // if current is -1 we need to get out while because menuChoice as been update
                 stayIn = 0;
@@ -105,7 +105,7 @@ void createMapMenu(SDL_Surface *sRootWindow, Map *MapToPlay, Map *PS_tmpMap, int
         } // end while
     } else{
         //single
-        displayMap(PS_tmpMap, sRootWindow, &current, menuChoice);
+        displayMap(PS_tmpMap, sRootWindow, &current, menuChoice, 0);
     }
     if(menuChoice[2] != 0){
         // set mapNum
