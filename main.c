@@ -11,10 +11,11 @@
 int main(int argc, char *argv[]) {
     // variable definition
     SDL_Surface *sRootWindow = NULL;
-    //SDL_Surface *sImgMenu = NULL;
-    int userMenuChoice = 0;
+
     int aBgColor[] = {255, 255, 255};
-    //SDL_Rect imgMenuPosition;
+    int startGame = 0;
+    // here we define one map we will contains the map choosed by user .
+    Map MapToPlay = {0, 0, 0, 0, "", ""};
 
     // Initialisation de SDL
     SDL_Init(SDL_INIT_VIDEO);
@@ -26,28 +27,15 @@ int main(int argc, char *argv[]) {
     // check
     checkIfSurfaceIsNull(sRootWindow, "Cannot create window ");
     /* End main window creation ca use this after*/
+
     // set a bg color and a name to the main window
     setNameAndBg(sRootWindow);
-    createMenu(sRootWindow, &userMenuChoice, MENU_PATH);
-    // we clean window but dont flip them at the moment
-    cleanWindow(sRootWindow, aBgColor, 0);
+    /*      START WHILE MENU        */
 
-    // The first menu as been displayed and the user have choose now we can move to the second menu or on edition level
-    if(userMenuChoice == 1){
-        /* seconde menu*/
-        // remove value of userMenuChoice because we reuse it
-        userMenuChoice = 0;
-        createMenu(sRootWindow, &userMenuChoice, LVL_MENU_PATH);
-    } else{
-        /* edition*/
-        SDL_Quit();
-        exit(EXIT_SUCCESS);
-    }
-    cleanWindow(sRootWindow, aBgColor, 1);
-    /*      END MENU SELECTION      */
+    showMenuAndSelectMap(sRootWindow, &MapToPlay);
 
     /*
-     MAP CODE
+     * wait until all menu as been displayed and user have chosen a map .IN PROGRESS
      */
 
     pause();

@@ -4,3 +4,5 @@ project.txt
 cmake-build-debug/*
 # ide dir
 .idea/*
+# trash
+trash_tmp.txt

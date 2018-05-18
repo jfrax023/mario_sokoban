@@ -44,8 +44,8 @@ void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag){
  */
 void setImageInWindow(SDL_Surface *sRoot, SDL_Surface *sImg, SDL_Rect *positionImg, int center){
     if(center != 0){
-        positionImg->x = sRoot->w / 2 - sImg->w / 2;
-        positionImg->y = sRoot->h / 2 - sImg->h / 2;
+        positionImg->x = (sRoot->w / 2) - ( sImg->w / 2);
+        positionImg->y = (sRoot->h / 2) - (sImg->h / 2);
     }
     SDL_BlitSurface(sImg, NULL, sRoot, positionImg);
 }
@@ -80,6 +80,25 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]){
     // update window
     SDL_Flip(sRootWindow);
     *pUserMenuChoice = getUserChoice(possibilities);
+    // free memory
+    SDL_FreeSurface(sImgMenu);
+}
+
+void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]){
+    SDL_Surface *sImgMenu = NULL;
+    SDL_Rect imgMenuPosition;
+
+    // create menu surface
+    sImgMenu = IMG_Load(imgPath);
+    checkIfSurfaceIsNull(sImgMenu, "Image not found ");
+
+    // put menu image to sImgMenu surface
+    setImageInWindow(sRootWindow, sImgMenu, &imgMenuPosition, 1);
+    // update window
+    SDL_Flip(sRootWindow);
+
+    // wait to back to menu 1
+    *pUserChoice = waitToBackEdition();
     // free memory
     SDL_FreeSurface(sImgMenu);
 }

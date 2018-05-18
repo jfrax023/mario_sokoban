@@ -24,5 +24,10 @@ void pause();
  */
 int getUserChoice(int pFlag);
 
+/**
+ * TMP just a tmp function to back menu 1 from edition
+ * @return An flag to put in menuChoice variable .
+ */
+int waitToBackEdition();
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_EVENTS_H

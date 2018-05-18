@@ -45,5 +45,8 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]);
  */
 void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag);
 
+
+void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]);
+
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_WINDOWS_H
