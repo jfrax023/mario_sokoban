@@ -6,6 +6,8 @@
  * -- void setImageInWindow(SDL_Surface *sRoot, SDL_Surface *sImg, SDL_Rect *positionImg, int center);
  * -- void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]);
  * -- void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag);
+ * -- void setImgToFrame(SDL_Surface *sElement, SDL_Surface *sRootWindow, SDL_Rect *position);
+ * -- void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current);
 */
 
 #ifndef MARIO_SOKOBAN_WINDOWS_H
@@ -29,6 +31,14 @@ void setNameAndBg(SDL_Surface *sRootWindow);
 void setImageInWindow(SDL_Surface *sRoot, SDL_Surface *sImg, SDL_Rect *positionImg, int center);
 
 /**
+ * Blit an image already put in sElement to the main window .
+ * @param sElement SDL_Surface The current surface where we work .
+ * @param sRootWindow SDL_Surface The main window .
+ * @param position SDL_Rect The position of this surface .
+ */
+void setImgToFrame(SDL_Surface *sElement, SDL_Surface *sRootWindow, SDL_Rect *position);
+
+/**
  * Create a séléction menu corresponding to one surface where we put a menu image and "blitt" them
  *  in the main window .After that she call the event function who will wait to get an user choice .
  * @param sRootWindow SDL_Surface The main window .
@@ -44,6 +54,15 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]);
  * @param flipFlag int A flag corresponding to tell if we need to SDL_Flip this surface or not, 0 dont flip 1 flip .
  */
 void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag);
+
+/**
+ * This function receive a map in parameter and translate them to an SDL window .
+ * @param pMap Map An pointer to the map structure where is stored the map data .
+ * @param pRootWindow SDL_Surface An pointer to main window .
+ * @param current int An pointer to the variable current to manage while .
+ * @param pMenuChoice int An pointer to the array menuChoice .
+ */
+void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice);
 
 
 void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]);

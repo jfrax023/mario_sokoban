@@ -4,11 +4,13 @@
  * Function List :
  * -- void pause();
  * -- int getUserChoice(int pFlag);
- *
+ * -- void mapMenuEventManager(Map *pMap, int *current, int *menuChoice);
  */
 
 #ifndef MARIO_SOKOBAN_EVENTS_H
 #define MARIO_SOKOBAN_EVENTS_H
+
+#include "utilities.h"
 //----------------------------------------------------------------------------------------------------------------------
 /**
  * Simple function to put the programme in pause mode until a SDL_QUIT event detected .
@@ -23,6 +25,14 @@ void pause();
  * @return int The number choosed by user .
  */
 int getUserChoice(int pFlag);
+
+
+/**
+ * This function manage the choice made by the user and set the next step in current .
+ * @param pMap An pointer to the map structure to access at next and previous var .
+ * @param current int An pointer to the current variable used to move to the next step .
+ */
+void mapMenuEventManager(Map *pMap, int *current, int *menuChoice);
 
 /**
  * TMP just a tmp function to back menu 1 from edition

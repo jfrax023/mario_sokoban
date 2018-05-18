@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL/SDL.h>
+#include "utilities.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -75,10 +76,68 @@
                         again = 1;
                 }// end switch
                 break;
-
+            default:
+                again = 1;
         } // end switch
     }
     return choice;
+ }
+
+
+ /**
+  * This function manage the choice made by the user and set the next step in current .
+  * @param pMap An pointer to the map structure to access at next and previous var .
+  * @param current int An pointer to the current variable used to move to the next step .
+  */
+void mapMenuEventManager(Map *pMap, int *current, int *menuChoice){
+    int again = 1;
+    SDL_Event event;
+    while(again){
+        SDL_WaitEvent(&event);
+        switch(event.type){
+            case SDL_QUIT:
+                SDL_Quit();
+                exit(EXIT_SUCCESS);
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym){
+                    // next map if possible
+                    case SDLK_RIGHT:
+                        if(pMap->next != -1){
+                            *current = pMap->next;
+                            again = 0;
+                        }
+                        break;
+                    case SDLK_LEFT:
+                        if(pMap->previous != -1){
+                            *current = pMap->previous;
+                            again = 0;
+                        }
+                        break;
+                    case SDLK_F8:
+                        menuChoice[1] = 0;
+                        *current = -1;
+                        again = 0;
+                        break;
+                    case SDLK_F9:
+                        menuChoice[0] = 0;
+                        menuChoice[1] = 0;
+                        *current = -1;
+                        again = 0;
+                        break;
+                    case SDLK_RETURN:
+                        menuChoice[2] = pMap->number;
+                        *current = -1;
+                        again = 0;
+                        break;
+                    default:
+                        again = 1;
+                        break;
+                } // end keydown
+                break;
+            default:
+                again = 1;
+        } // end event type
+    } // end again
  }
 
  // TMP REMOVE THEM LATER

@@ -102,7 +102,7 @@ struct Map{
     int next;
     int difficulty;
     char name[A_HALF_HUNDR];
-    char content[MAP_MAX_SIZE];
+    char content[A_HALF_THOUS];
 };
 
 void copyMap(Map *MapToPlay, Map copy);

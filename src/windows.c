@@ -50,6 +50,19 @@ void setImageInWindow(SDL_Surface *sRoot, SDL_Surface *sImg, SDL_Rect *positionI
     SDL_BlitSurface(sImg, NULL, sRoot, positionImg);
 }
 
+
+/**
+ * Blit an image already put in sElement to the main window .
+ * @param sElement SDL_Surface The current surface where we work .
+ * @param sRootWindow SDL_Surface The main window .
+ * @param position SDL_Rect The position of this surface .
+ */
+void setImgToFrame(SDL_Surface *sElement, SDL_Surface *sRootWindow, SDL_Rect *position){
+    SDL_BlitSurface(sElement, NULL, sRootWindow, position);
+    // add new x position
+    position->x += E_WIDTH;
+}
+
 /**
  * Create a séléction menu corresponding to one surface where we put a menu image and "blit" them
  *  in the main window .After that she call the event function who will wait to get an user choice .
@@ -82,6 +95,94 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]){
     *pUserMenuChoice = getUserChoice(possibilities);
     // free memory
     SDL_FreeSurface(sImgMenu);
+}
+
+/**
+ * This function receive a map in parameter and translate them to an SDL window .
+ * @param pMap Map An pointer to the map structure where is stored the map data .
+ * @param pRootWindow SDL_Surface An pointer to main window .
+ * @param current int An pointer to the variable current to manage while .
+ * @param pMenuChoice int An pointer to the array menuChoice .
+ */
+void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice){
+    // content size
+    int size = (int) strlen(pMap->content);
+    int color[3] = {255, 255, 255};
+    SDL_Rect positionElement = {0, 0};
+    // MAP_MAX_SIZE corresponding to the number of frame we have in map (16 * 16) = 256
+    SDL_Surface *sElement[MAP_MAX_SIZE] = {NULL};
+    // surface counter to avoid end line case (i have 16 \n more than nS)
+    int nS = 0;
+
+    for(int i = 0; i < size; i++){
+        switch(pMap->content[i]){
+            case E_WALL:
+                sElement[nS] = IMG_Load(WALL_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_BOX:
+                sElement[nS] = IMG_Load(BOX_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_BOX_OK:
+                sElement[nS] = IMG_Load(BOX_OK_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_GOAL:
+                sElement[nS] = IMG_Load(GOAL_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_MARIO_TOP:
+                sElement[nS] = IMG_Load(MARIO_TOP_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_MARIO_BOT:
+                sElement[nS] = IMG_Load(MARIO_BOT_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_MARIO_LEFT:
+                sElement[nS] = IMG_Load(MARIO_LEFT_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_MARIO_RIGHT:
+                sElement[nS] = IMG_Load(MARIO_RIGHT_PATH);
+                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                nS++;
+                break;
+            case E_NULL:
+                // here just change the position of element .
+                positionElement.x += E_WIDTH;
+                nS++;
+                break;
+            case E_END_LINE:
+                // end line tell to change the y offset to move to the next line
+                positionElement.y += E_HEIGHT;
+                positionElement.x = 0;
+                break;
+            default:
+                fprintf(stderr, "Warning this character is not handled => %c", pMap->content[i]);
+                break;
+        } // end switch
+
+    } // end for
+
+    SDL_Flip(pRootWindow);
+    // call event manager to define the next step
+    mapMenuEventManager(pMap, current, pMenuChoice);
+    // clean
+    cleanWindow(pRootWindow, color, 1);
+    // free surface
+    for(int i = 0; i < MAP_MAX_SIZE; i++){
+        SDL_FreeSurface(sElement[i]);
+    }
+
 }
 
 void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]){

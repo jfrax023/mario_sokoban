@@ -34,9 +34,7 @@ int main(int argc, char *argv[]) {
 
     showMenuAndSelectMap(sRootWindow, &MapToPlay);
 
-    /*
-     * wait until all menu as been displayed and user have chosen a map .IN PROGRESS
-     */
+    // here normally we have a map data to play .
 
     pause();
 

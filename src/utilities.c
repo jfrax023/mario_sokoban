@@ -90,16 +90,27 @@ void copyMap(Map *MapToPlay, Map copy){
 void createMapMenu(SDL_Surface *sRootWindow, Map *MapToPlay, Map *PS_tmpMap, int *menuChoice, int nbFile){
     int current = 0;
     int stayIn = 1;
+    int mapNum = 0;
     if(nbFile != 1){
         // multi
         while(stayIn){
             // first time
-            // IN PROGRESS
+            if(current != -1){
+                displayMap(&PS_tmpMap[current], sRootWindow, &current, menuChoice);
+            } else{
+                // if current is -1 we need to get out while because menuChoice as been update
+                stayIn = 0;
+            }
 
-            stayIn = 0;
         } // end while
     } else{
         //single
+        displayMap(PS_tmpMap, sRootWindow, &current, menuChoice);
+    }
+    if(menuChoice[2] != 0){
+        // set mapNum
+        mapNum = menuChoice[2] - 1;
+        copyMap(MapToPlay, PS_tmpMap[mapNum]);
     }
 }
 
@@ -144,15 +155,19 @@ void getMapData(SDL_Surface *pRootWindow, Map *pMapToPlay, int *pMenuChoice, cha
             }
         } else{
             for(int i = 0; i < nbFile; i++){
-                PS_tmpMap[i].number = i + 1;
-                PS_tmpMap[i].difficulty = fLvl;
-                PS_tmpMap[i].previous = -1;
-                PS_tmpMap[i].next = -1;
+
+                (PS_tmpMap + i)->number = i + 1;
+                (PS_tmpMap + i)->difficulty = -1;
+                (PS_tmpMap + i)->previous = -1;
+                (PS_tmpMap + i)->next = -1;
+
                 for(int c = 0; c < A_HALF_HUNDR; c++){
-                    PS_tmpMap[i].name[c] = 0;
+
+                    (PS_tmpMap + i)->name[c] = 0;
                 }
                 for(int c = 0; c < MAP_MAX_SIZE; c++){
-                    PS_tmpMap[i].content[c] = 0;
+                    (PS_tmpMap + i)->content[c] = 0;
+
                 }
             }
         }
@@ -161,27 +176,24 @@ void getMapData(SDL_Surface *pRootWindow, Map *pMapToPlay, int *pMenuChoice, cha
         //initMap(PS_tmpMap, nbFile, fLvl);
         /* Here we can store the file data in PS_tmpMap*/
         setNameInMap(levelPath, E_TEXT, PS_tmpMap);
-        setContentByFileName(levelPath, PS_tmpMap);
         setPreviousAndNext(PS_tmpMap, nbFile);
+        for(int i = 0; i < nbFile; i++){
+            setContentByFileName(levelPath, &PS_tmpMap[i]);
+        }
         /* Now we can call the function to display the last menu */
         createMapMenu(pRootWindow, pMapToPlay, PS_tmpMap, pMenuChoice, nbFile);
-
-        /*
-         * Wait until menu 3 as been displayed and user have chosen a map . IN PROGRESS
-        */
 
     } else{
         // if no file in directory, we simply put value 0 in pMenuChoice[1] to get back menu2
         pMenuChoice[1] = 0;
     }
-    // gestion menu3
-    
+    // free memory
     free(PS_tmpMap);
 }
 
 /**
- * This function display allow to navigate in the differents menu of selection .We have 3 menu :
- *  - menu 1 : He'll allow to choose between a playable mode or to map editon .
+ * This function allow to navigate in the differents menu of selection .We have 3 menu :
+ *  - menu 1 : He'll allow to chose between a playable mode or a map edition .
  *  - menu 2 : Allow to choose the difficulty for the game .Easy, medium, hard .More higher is a choice more difficult the
  *              map is
  *  - menu 3 : Display a map and allow to navigate to the next or the previous map if possible, and select them .
@@ -213,6 +225,7 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
             tmpShowEdition(sRootWindow, &menuChoice[0], EDITION_MENU_PATH);
             /* clean window */
             cleanWindow(sRootWindow, aBgColor, 1);
+            continue;
         }
 
         /* second condition to display the second menu . */
@@ -224,8 +237,7 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
             if(menuChoice[1] != 0){
                 /* if different to 0 we can set a difficulty in lvlMode */
                 setDifficulty(menuChoice[1], &LvlMode, levelPath);
-                // DONT FORGOT TO REMOVE
-                stayIn = 0;
+
             }else{
                 /* if menu[1] is 0 we need to back to menu 1 */
                 menuChoice[0] = 0;
@@ -240,6 +252,9 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
         if(menuChoice[0] == 1 && menuChoice[1] != 0 && menuChoice[2] == 0){
             /* Call the menu 3 manager function  */
             getMapData(sRootWindow, MapToPlay, menuChoice, levelPath, LvlMode);
+        } else{
+            // user have chose a map get back to main
+            stayIn = 0;
         }
     } // end while
 }
