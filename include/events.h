@@ -5,6 +5,8 @@
  * -- void pause();
  * -- int getUserChoice(int pFlag);
  * -- void mapMenuEventManager(Map *pMap, int *current, int *menuChoice);
+ * -- gameStartEvent();
+ * -- void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario);
  */
 
 #ifndef MARIO_SOKOBAN_EVENTS_H
@@ -39,5 +41,12 @@ void mapMenuEventManager(Map *pMap, int *current, int *menuChoice);
  * @return An flag to put in menuChoice variable .
  */
 int waitToBackEdition();
+
+/**
+ * Juste wait a return event to start game in main
+ */
+void gameStartEvent();
+
+void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario);
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_EVENTS_H

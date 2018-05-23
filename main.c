@@ -34,8 +34,11 @@ int main(int argc, char *argv[]) {
 
     showMenuAndSelectMap(sRootWindow, &MapToPlay);
 
+    cleanWindow(sRootWindow, 1);
     // here normally we have a map data to play .
+    showOverlay(sRootWindow);
 
+    displayMap(&MapToPlay, sRootWindow, NULL, NULL, 1);
     pause();
 
     SDL_Quit();

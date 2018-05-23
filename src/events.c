@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include "utilities.h"
+#include "game.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -170,5 +171,148 @@ void mapMenuEventManager(Map *pMap, int *current, int *menuChoice){
      } // end while
      return 0;
  }
+
+/**
+ * Juste wait a return event to start game in main
+ */
+void gameStartEvent(){
+     SDL_Event event;
+     int again = 1;
+     while(again){
+         SDL_WaitEvent(&event);
+         switch(event.type){
+             case SDL_QUIT:
+                 SDL_Quit();
+                 exit(EXIT_SUCCESS);
+             case SDL_KEYDOWN:
+                 switch(event.key.keysym.sym){
+                     case SDLK_RETURN:
+                         again = 0;
+                         break;
+                     default:
+                         continue;
+                 }
+             default:
+                 continue;
+         }
+     }
+ }
+
+ void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario){
+     int inGame = 1;
+     int nbObjClear = 0;
+     int next = 0;
+     int nextBox = 0;
+     int current = numSurfaceMario;
+     SDL_Event event;
+     while(inGame){
+         SDL_WaitEvent(&event);
+         switch(event.type){
+             case SDL_QUIT:
+                 for(int i = 0; i < MAP_MAX_SIZE; i++){
+                     SDL_FreeSurface(sElem[i]);
+                 }
+                 SDL_Quit();
+                 exit(EXIT_SUCCESS);
+             case SDL_KEYDOWN:
+                 switch(event.key.keysym.sym){
+                     case SDLK_UP:
+                         next = setNextTarget(current , NB_FRAME_IN_LINE, '-');
+                         nextBox = checkMovement(next, elem, NB_FRAME_IN_LINE, '-');
+                         // next box can contain 0 if movement impossible, 1 if movement possible, position of the next surface after
+                         //  a box if box there .
+                         if(!nextBox){
+                             continue;
+                         } else if(nextBox == 1){
+                             // we push box need to know the possition after here
+                             nextBox = 0;
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', NB_FRAME_IN_LINE, &nextBox);
+                             break;
+                         } else{
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', NB_FRAME_IN_LINE, &nextBox);
+                             break;
+                         }
+                     case SDLK_DOWN:
+                         next = setNextTarget(current , NB_FRAME_IN_LINE, '+');
+                         nextBox = checkMovement(next, elem, NB_FRAME_IN_LINE, '+');
+                         if(!nextBox){
+                             continue;
+                         } else if(nextBox == 1){
+                             // we push box need to know the possition after here
+                             nextBox = 0;
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', NB_FRAME_IN_LINE, &nextBox);
+                             break;
+                         } else{
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', NB_FRAME_IN_LINE, &nextBox);
+                             break;
+                         }
+                     case SDLK_RIGHT:
+                         next = setNextTarget(current , 1, '+');
+                         nextBox = checkMovement(next, elem, 1, '+');
+                         if(!nextBox){
+                             continue;
+                         } else if(nextBox == 1){
+                             // we push box need to know the possition after here
+                             nextBox = 0;
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', 1, &nextBox);
+                             break;
+                         } else{
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', 1, &nextBox);
+                             break;
+                         }
+                     case SDLK_LEFT:
+                         next = setNextTarget(current , 1, '-');
+                         nextBox = checkMovement(next, elem, 1, '-');
+                         if(!nextBox){
+                             continue;
+                         } else if(nextBox == 1){
+                             // we push box need to know the possition after here
+                             nextBox = 0;
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', 1, &nextBox);
+                             break;
+                         } else{
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', 1, &nextBox);
+                             break;
+                         }
+                     default:
+                         continue;
+                 }// end event.key...
+             default:
+                 ;
+         } // end event.type
+         //inGame = 0;
+     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //----------------------------------------------------------------------------------------------------------------------

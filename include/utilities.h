@@ -42,8 +42,10 @@
 #define A_HUND 100
 #define A_HALF_THOUS 500
 #define A_THOUS 1000
-// for map content max is 18*18 324
+// for map content max is 16*16  256
 #define MAP_MAX_SIZE (16*16)
+#define NB_FRAME_IN_LINE 16
+#define NB_LINE 16
 
 // path images
 #define BOX_PATH "img/caisse.jpg"
@@ -57,6 +59,8 @@
 #define EDITION_MENU_PATH "img/edition.png"
 #define WALL_PATH "img/mur.jpg"
 #define GOAL_PATH "img/objectif.png"
+#define OVERLAY_PATH "img/overlay.png"
+
 
 // define letter for elements
 #define E_WALL 'O'
@@ -105,6 +109,26 @@ struct Map{
     char content[A_HALF_THOUS];
 };
 
+/**
+ * Structure Element corresponding to an élément of game like caisse or wall etc ... Here we stored some data to help us
+ *  to manage movement .
+ *  @var char id A letter representing this élément in file .
+ *  @var int block Bool said if this élément is fix and he block any movement .
+ *  @var int limitX A number corresponding to the end pixel of this élément (surface->x + E_WIDTH)
+ *  @var int limitY A number corresponding to the end pixel of this élément (surface->y + E_EIGHT)
+ *  @var int numSurface An id to help us to access at the surface corresponding to this élément .
+ */
+typedef struct ELEMENT ELEMENT;
+struct ELEMENT{
+    char id;
+    int block;
+    int numSurface;
+    int x;
+    int y;
+    int limitX;
+    int limitY;
+    char pathImg[A_HALF_HUNDR];
+};
 void copyMap(Map *MapToPlay, Map copy);
 
 

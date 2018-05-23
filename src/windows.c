@@ -10,6 +10,7 @@
 #include "error_helper.h"
 #include "events.h"
 #include <string.h>
+#include "game.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -27,8 +28,8 @@ void setNameAndBg(SDL_Surface *sRootWindow){
  * @param color int Array with rgb color [r, g, b] nedded .
  * @param flipFlag int A flag corresponding to tell if we need to SDL_Flip this surface or not, 0 dont flip 1 flip .
  */
-void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag){
-    SDL_FillRect(sWindow, NULL, SDL_MapRGB(sWindow->format, color[0], color[1], color[2]));
+void cleanWindow(SDL_Surface *sWindow, int flipFlag){
+    SDL_FillRect(sWindow, NULL, SDL_MapRGB(sWindow->format, 255, 255, 255));
     if(flipFlag == 1){
         // update window
         SDL_Flip(sWindow);
@@ -44,24 +45,12 @@ void cleanWindow(SDL_Surface *sWindow, int color[], int flipFlag){
  */
 void setImageInWindow(SDL_Surface *sRoot, SDL_Surface *sImg, SDL_Rect *positionImg, int center){
     if(center != 0){
-        positionImg->x = (sRoot->w / 2) - ( sImg->w / 2);
-        positionImg->y = (sRoot->h / 2) - (sImg->h / 2);
+        positionImg->x = (u_int16_t) ((sRoot->w / 2) - ( sImg->w / 2));
+        positionImg->y = (u_int16_t) ((sRoot->h / 2) - (sImg->h / 2));
     }
     SDL_BlitSurface(sImg, NULL, sRoot, positionImg);
 }
 
-
-/**
- * Blit an image already put in sElement to the main window .
- * @param sElement SDL_Surface The current surface where we work .
- * @param sRootWindow SDL_Surface The main window .
- * @param position SDL_Rect The position of this surface .
- */
-void setImgToFrame(SDL_Surface *sElement, SDL_Surface *sRootWindow, SDL_Rect *position){
-    SDL_BlitSurface(sElement, NULL, sRootWindow, position);
-    // add new x position
-    position->x += E_WIDTH;
-}
 
 /**
  * Create a séléction menu corresponding to one surface where we put a menu image and "blit" them
@@ -108,57 +97,121 @@ void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]){
 void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuChoice, int inGame){
     // content size
     int size = (int) strlen(pMap->content);
-    int color[3] = {255, 255, 255};
+    int numSurfaceMario = 0;
     SDL_Rect positionElement = {0, 0};
+    SDL_Rect positionMario = {0, 0};
     // MAP_MAX_SIZE corresponding to the number of frame we have in map (16 * 16) = 256
     SDL_Surface *sElement[MAP_MAX_SIZE] = {NULL};
+    // Create array of Element for game
+    ELEMENT ST_Elements[MAP_MAX_SIZE] = {0, 0, 0, 0, 0};
     // surface counter to avoid end line case (i have 16 \n more than nS)
     int nS = 0;
 
     for(int i = 0; i < size; i++){
         switch(pMap->content[i]){
             case E_WALL:
+                // set img and blit them
                 sElement[nS] = IMG_Load(WALL_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                // if in game we set the element structure .
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_WALL, 1, nS, &positionElement, WALL_PATH);
+                }
+                // update postion and nS, only width need to set here eight set in \n case .
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_BOX:
                 sElement[nS] = IMG_Load(BOX_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame) {
+                    setElementData(&ST_Elements[nS], E_BOX, 0, nS, &positionElement, BOX_PATH);
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_BOX_OK:
                 sElement[nS] = IMG_Load(BOX_OK_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_BOX_OK, 1, nS, &positionElement, BOX_OK_PATH);
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_GOAL:
                 sElement[nS] = IMG_Load(GOAL_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_GOAL, 0, nS, &positionElement, GOAL_PATH);
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_MARIO_TOP:
                 sElement[nS] = IMG_Load(MARIO_TOP_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_MARIO_TOP, 0, nS, &positionElement, MARIO_TOP_PATH);
+                    // set mario position
+                    setMarioPosition(&positionMario, sElement[nS]->w, sElement[nS]->h);
+                    numSurfaceMario = nS;
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
             case E_MARIO_BOT:
                 sElement[nS] = IMG_Load(MARIO_BOT_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_MARIO_BOT, 0, nS, &positionElement, MARIO_BOT_PATH);
+                    // set mario position
+                    setMarioPosition(&positionMario, sElement[nS]->w, sElement[nS]->h);
+                    numSurfaceMario = nS;
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_MARIO_LEFT:
                 sElement[nS] = IMG_Load(MARIO_LEFT_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_MARIO_LEFT, 0, nS, &positionElement, MARIO_LEFT_PATH);
+                    // set mario position
+                    setMarioPosition(&positionMario, sElement[nS]->w, sElement[nS]->h);
+                    numSurfaceMario = nS;
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_MARIO_RIGHT:
                 sElement[nS] = IMG_Load(MARIO_RIGHT_PATH);
-                setImgToFrame(sElement[nS], pRootWindow, &positionElement);
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_MARIO_RIGHT, 0, nS, &positionElement, MARIO_RIGHT_PATH);
+                    // set mario position
+                    setMarioPosition(&positionMario, sElement[nS]->w, sElement[nS]->h);
+                    numSurfaceMario = nS;
+                }
+                positionElement.x += E_WIDTH;
                 nS++;
                 break;
+                // --
             case E_NULL:
-                // here just change the position of element .
+                // we need to set a withe bg here
+                sElement[nS] = SDL_CreateRGBSurface(SDL_HWSURFACE, E_WIDTH, E_HEIGHT, 32, 0, 0, 0, 0);
+                SDL_FillRect(sElement[nS], NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
+                SDL_BlitSurface(sElement[nS], NULL, pRootWindow, &positionElement);
+                if(inGame){
+                    setElementData(&ST_Elements[nS], E_NULL, 0, nS, &positionElement, "null");
+                }
+                //change the position of element .
                 positionElement.x += E_WIDTH;
                 nS++;
                 break;
@@ -176,17 +229,118 @@ void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuCho
 
     SDL_Flip(pRootWindow);
     if(inGame){
-        // call event manger for game event
+        // call game function
+        gameEventManager(pRootWindow, sElement, ST_Elements, numSurfaceMario);
     } else{
         // call event manager to define the next step in menu functionality
         mapMenuEventManager(pMap, current, pMenuChoice);
+        // clean
+        cleanWindow(pRootWindow, 0);
     }
-    // clean
-    cleanWindow(pRootWindow, color, 1);
     // free surface
     for(int i = 0; i < MAP_MAX_SIZE; i++){
         SDL_FreeSurface(sElement[i]);
     }
+
+}
+
+
+/**
+ * This function set a transition image between map selection and game start .
+ * @param pRootWindow SDL_Surface The main window .
+ */
+void showOverlay(SDL_Surface *pRootWindow){
+    SDL_Surface *sOverlay = NULL;
+    SDL_Rect overlayPosition;
+
+    sOverlay = IMG_Load(OVERLAY_PATH);
+    if(sOverlay == NULL){
+        SDL_Quit();
+        exit(EXIT_FAILURE);
+    }
+    setImageInWindow(pRootWindow, sOverlay, &overlayPosition, 1);
+    SDL_Flip(pRootWindow);
+    gameStartEvent();
+    cleanWindow(pRootWindow, 1);
+    SDL_FreeSurface(sOverlay);
+}
+
+
+/**
+ * Set a data in surface .
+ * @param pRootWindow pRootWindow SDL_Surface An pointer to main window .
+ * @param sElem sElem SDL_Surface An array of pointer to the element surface .
+ * @param S_eElem ELEMENT The current element in structure element where the position and data is set .
+ * @param img int Bool tell if we set an image or just fill rect .
+ */
+void setValueForSurface(SDL_Surface *pRootWindow, SDL_Surface *sElem, ELEMENT S_eElem, int img){
+    SDL_Rect tmpPosition;
+    tmpPosition.x = 0;
+    tmpPosition.y = 0;
+    if(img == 1){
+        // load image .
+        sElem = IMG_Load(S_eElem.pathImg);
+        checkIfSurfaceIsNull(sElem, "Image upload failed .");
+        // set postion for sElem[i]
+        tmpPosition.x = (u_int16_t) S_eElem.x;
+        tmpPosition.y = (u_int16_t) S_eElem.y;
+        // and blit
+        SDL_BlitSurface(sElem, NULL, pRootWindow, &tmpPosition);
+    } else{
+
+        sElem = SDL_CreateRGBSurface(SDL_HWSURFACE, E_WIDTH, E_HEIGHT, 32, 0, 0, 0, 0);
+        SDL_FillRect(sElem, NULL, SDL_MapRGBA(pRootWindow->format, 255, 255, 255, 0));
+        // set postion for sElem[i]
+        tmpPosition.x = (u_int16_t) S_eElem.x;
+
+        tmpPosition.y = (u_int16_t) S_eElem.y;
+        // and blit
+        SDL_BlitSurface(sElem, NULL, pRootWindow, &tmpPosition);
+    }
+}
+
+
+/**
+ * Update the root window with the new value make before .
+ * @param pRootWindow SDL_Surface An pointer to the main surface .
+ * @param sElem SDL_Surface An array of pointer to the element surface .
+ * @param S_eElem ELEMENT An pointer to the structure element where the position and data is set .
+ * @param nextElem int The position of the next element in an array .
+ * @param nextBox  int The position of the next surface after a box if box there .
+ */
+void updateMainWindow(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *S_eElem, int currentElem, int nextElem){
+
+    // clean main window .
+    cleanWindow(pRootWindow, 0);
+    // while to create MAP_MAX_SIZE (256) surface and put the correct element in
+    for(int i = 0; i < MAP_MAX_SIZE;i++){
+        switch(S_eElem[i].id){
+            case E_NULL:
+                setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 0);
+                break;
+            case E_BOX:
+                if(i != nextElem){
+                    setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 1);
+                    break;
+                }
+            case E_WALL:
+                setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 1);
+                break;
+            case E_GOAL:
+                setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 1);
+                break;
+            default:
+                ;
+        } // end switch
+    } // end for
+    // now we can blit mario and a box if box there .
+    if(S_eElem[nextElem].id == E_BOX){
+        setValueForSurface(pRootWindow, sElem[nextElem], S_eElem[nextElem], 1);
+    }
+    // mario
+    setValueForSurface(pRootWindow, sElem[currentElem], S_eElem[currentElem], 1);
+
+    SDL_Flip(pRootWindow);
 
 }
 

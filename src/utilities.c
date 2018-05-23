@@ -216,7 +216,7 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
             /* if menuChoice is 0 we display the first menu */
             createMenu(sRootWindow, &menuChoice[0], MENU_PATH);
             /* we clean window but dont flip them at the moment */
-            cleanWindow(sRootWindow, aBgColor, 0);
+            cleanWindow(sRootWindow, 0);
         }
 
         /*manage the edition choice */
@@ -224,7 +224,7 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
             /* here we try to display an image and allow to back to main menu with f9 key */
             tmpShowEdition(sRootWindow, &menuChoice[0], EDITION_MENU_PATH);
             /* clean window */
-            cleanWindow(sRootWindow, aBgColor, 1);
+            cleanWindow(sRootWindow, 0);
             continue;
         }
 
@@ -242,12 +242,12 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
                 /* if menu[1] is 0 we need to back to menu 1 */
                 menuChoice[0] = 0;
                 /* we clean the window */
-                cleanWindow(sRootWindow, aBgColor, 1);
+                cleanWindow(sRootWindow, 0);
                 continue;
             }
         } // end second condition
 
-        cleanWindow(sRootWindow, aBgColor, 1);
+        cleanWindow(sRootWindow, 0);
         /* Menu3 condition*/
         if(menuChoice[0] == 1 && menuChoice[1] != 0 && menuChoice[2] == 0){
             /* Call the menu 3 manager function  */
