@@ -66,7 +66,7 @@ void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuCho
  * This function set a transition image between map selection and game start .
  * @param pRootWindow SDL_Surface The main window .
  */
-void showOverlay(SDL_Surface *pRootWindow);
+void showOverlay(SDL_Surface *pRootWindow, char path[]);
 
 /**
  * Set a data in surface .

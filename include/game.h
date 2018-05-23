@@ -13,7 +13,12 @@
  * -- void removeMarioInElement(ELEMENT *S_Elem);
  * -- void displayObjectifClear(ELEMENT *elem);
  * -- void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextBox, int *objFlag);
- * --
+ * -- void copyMarioTop(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+ * -- void copyMarioBot(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+ * -- void copyMarioRight(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+ * -- void copyMarioLeft(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+ * -- void callMarioCopy(ELEMENT *S_eTarget, ELEMENT *S_eMario, int move, char dirFlag);
+ * -- int getNbObjectif(Map *MapToPlay);
  */
 
 #ifndef MARIO_SOKOBAN_GAME_H
@@ -46,6 +51,40 @@ void displayObjectifInSurface(ELEMENT *S_elem);
 void displayObjectifClear(ELEMENT *elem);
 
 /**
+ * Copy mario top data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioTop(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+
+/**
+ * Copy mario bottom data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioBot(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+/**
+ * Copy mario right data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioRight(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+
+/**
+ * This function set the number of objective the map has .
+ * @param MapToPlay Map The map chosen by the user .
+ * @return The number of objective map has .
+ */
+int getNbObjectif(Map *MapToPlay);
+
+/**
+ * Copy mario left data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioLeft(ELEMENT *S_eTarget, ELEMENT *S_eMario);
+
+/**
  * Set a potion for mario avatar .
  * @param posMario SDL_Rect An pointer to the var marioPosition .
  * @param x int X position .
@@ -67,6 +106,13 @@ void cleanElement(ELEMENT *S_eTarget);
 void cpDataInElement(ELEMENT *S_eTarget, ELEMENT *S_eToCopy);
 
 /**
+ * Set or return the objective flag to tell if we have an objective .
+ * @param nb int The number to set objective is > ou == to 1 just ignored .
+ * @return int 1 If objective 0 else .
+ */
+int getObjectifFlag(int nb);
+
+/**
  * This function check and call the update function for the structure element .
  * @param S_eElem ELEMENT S_eElem An pointer to the structure element where update the value .
  * @param currentElem int An pointer to the variable currentElement corresponding to the current element (mario)
@@ -75,7 +121,8 @@ void cpDataInElement(ELEMENT *S_eTarget, ELEMENT *S_eToCopy);
  * @param objFlag int An pointer to the var objFlag who tell if the next surface is an objective or if an objective need
  *                      to be re display .
  */
-void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextBox, int *objFlag);
+void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextBox, int *objFlag,
+                   int move, char dirFlag, int *nbObjectif);
 
 /**
  * Update an element where mario avatare has been to a null element .
@@ -104,7 +151,7 @@ void setPositionForElem(ELEMENT *S_eElem, char dirFlag, int move);
  * @param nextBox int An pointer to the nextBox var corresponding to the next surface after the box .
  */
 void setMovement(ELEMENT *S_eElem, SDL_Surface *pRootWindow, SDL_Surface *sElem[],
-                int *currentElem, int *nextElem, char dirFlag, int move, int *nextBox);
+                int *currentElem, int *nextElem, char dirFlag, int move, int *nextBox, int *nbObjectif);
 
 /**
  * Check if the movement made by user is in limits of the map .
@@ -114,6 +161,14 @@ void setMovement(ELEMENT *S_eElem, SDL_Surface *pRootWindow, SDL_Surface *sElem[
  */
 int setNextTarget(int current, int move, char dirFlag);
 
+/**
+ * Call the correct function according to the move and dirFlag parameters .
+ * @param S_eTarget ELEMENT An pointer to the element target .
+ * @param S_eToCopy ELEMENT An pointer to the element to copy .
+ * @param move int A number corresponding to the direction where we going 1 left and right other top and bot
+ * @param dirFlag A symbole + or - to tell if we go top or bot or right or left .
+ */
+void callMarioCopy(ELEMENT *S_eTarget, ELEMENT *S_eMario, int move, char dirFlag);
 
 /**
  * Check if the movement is possible .

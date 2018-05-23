@@ -6,6 +6,7 @@
 #include "utilities.h"
 #include "windows.h"
 #include "error_helper.h"
+#include "game.h"
 
 
 int main(int argc, char *argv[]) {
@@ -13,7 +14,7 @@ int main(int argc, char *argv[]) {
     SDL_Surface *sRootWindow = NULL;
 
     int aBgColor[] = {255, 255, 255};
-    int startGame = 0;
+    int inGame = 1;
     // here we define one map we will contains the map choosed by user .
     Map MapToPlay = {0, 0, 0, 0, "", ""};
 
@@ -30,15 +31,23 @@ int main(int argc, char *argv[]) {
 
     // set a bg color and a name to the main window
     setNameAndBg(sRootWindow);
-    /*      START WHILE MENU        */
+    while(inGame) {
 
-    showMenuAndSelectMap(sRootWindow, &MapToPlay);
 
-    cleanWindow(sRootWindow, 1);
-    // here normally we have a map data to play .
-    showOverlay(sRootWindow);
+        /*      START WHILE MENU        */
+        showMenuAndSelectMap(sRootWindow, &MapToPlay);
 
-    displayMap(&MapToPlay, sRootWindow, NULL, NULL, 1);
+        cleanWindow(sRootWindow, 1);
+        // here normally we have a map data to play .
+        getNbObjectif(&MapToPlay);
+        showOverlay(sRootWindow, OVERLAY_PATH);
+        displayMap(&MapToPlay, sRootWindow, NULL, NULL, 1);
+        cleanWindow(sRootWindow, 0);
+        showOverlay(sRootWindow, END_GAME_PATH);
+        gameStartEvent();
+        cleanWindow(sRootWindow, 0);
+
+    }
     pause();
 
     SDL_Quit();

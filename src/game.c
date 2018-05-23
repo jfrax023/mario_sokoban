@@ -46,6 +46,61 @@ void setElementData(ELEMENT *elem, char id, int block, int numSurface, SDL_Rect 
     strcpy(elem->pathImg, path);
 }
 
+/**
+ * Copy mario top data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioTop(ELEMENT *S_eTarget, ELEMENT *S_eMario){
+    cleanElement(S_eTarget);
+    S_eTarget->id = E_MARIO_TOP;
+    S_eTarget->y = S_eMario->y;
+    S_eTarget->x = S_eMario->x;
+    strcpy(S_eTarget->pathImg, MARIO_TOP_PATH);
+}
+
+/**
+ * Copy mario bottom data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioBot(ELEMENT *S_eTarget, ELEMENT *S_eMario){
+    cleanElement(S_eTarget);
+    S_eTarget->id = E_MARIO_BOT;
+    S_eTarget->y = S_eMario->y;
+    S_eTarget->x = S_eMario->x;
+    strcpy(S_eTarget->pathImg, MARIO_BOT_PATH);
+}
+
+
+/**
+ * Copy mario right data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioRight(ELEMENT *S_eTarget, ELEMENT *S_eMario){
+    cleanElement(S_eTarget);
+    S_eTarget->id = E_MARIO_RIGHT;
+    S_eTarget->y = S_eMario->y;
+    S_eTarget->x = S_eMario->x;
+    strcpy(S_eTarget->pathImg, MARIO_RIGHT_PATH);
+}
+
+
+/**
+ * Copy mario left data in an elment
+ * @param S_eTarget ELEMENT The target where we copy data .
+ * @param S_eMario ELEMENT The current element here mario .
+ */
+void copyMarioLeft(ELEMENT *S_eTarget, ELEMENT *S_eMario){
+    cleanElement(S_eTarget);
+    S_eTarget->id = E_MARIO_LEFT;
+    S_eTarget->y = S_eMario->y;
+    S_eTarget->x = S_eMario->x;
+    strcpy(S_eTarget->pathImg, MARIO_LEFT_PATH);
+}
+
+
 
 /**
  * Update an element in Element structure to make it match a objectif clear element .
@@ -111,6 +166,34 @@ void cpDataInElement(ELEMENT *S_eTarget, ELEMENT *S_eToCopy){
 
 
 /**
+ * Call the correct function according to the move and dirFlag parameters .
+ * @param S_eTarget ELEMENT An pointer to the element target .
+ * @param S_eToCopy ELEMENT An pointer to the element to copy .
+ * @param move int A number corresponding to the direction where we going 1 left and right other top and bot
+ * @param dirFlag A symbole + or - to tell if we go top or bot or right or left .
+ */
+void callMarioCopy(ELEMENT *S_eTarget, ELEMENT *S_eMario, int move, char dirFlag){
+    if(move == 1){
+        if(dirFlag == '+'){
+            // move right
+            // copy mario in next
+            copyMarioRight(S_eTarget, S_eMario);
+        } else{
+            copyMarioLeft(S_eTarget, S_eMario);
+        }
+    } else{
+        if(dirFlag == '+'){
+            // move right
+            // copy mario in next
+            copyMarioBot(S_eTarget, S_eMario);
+        } else{
+            copyMarioTop(S_eTarget, S_eMario);
+        }
+    }
+}
+
+
+/**
  * This function check and call the update function for the structure element .
  * @param S_eElem ELEMENT An pointer to the structure element where update the value .
  * @param currentElem int An pointer to the variable currentElement corresponding to the current element (mario)
@@ -119,12 +202,14 @@ void cpDataInElement(ELEMENT *S_eTarget, ELEMENT *S_eToCopy){
  * @param objFlag int An pointer to the var objFlag who tell if the next surface is an objective or if an objective need
  *                      to be re display .
  */
-void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextBox, int *objFlag){
+void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextBox, int *objFlag,
+                   int move, char dirFlag, int *nbObjectif){
+
     if(!*objFlag){
-        //no objective
+        //no objective no box
         if(*nextBox == 0){
-            // copy current in next
-            cpDataInElement(&S_eElem[*nextElem], &S_eElem[*currentElem]);
+            // mario image condition
+            callMarioCopy(&S_eElem[*nextElem], &S_eElem[*currentElem], move, dirFlag);
             // remove mario
             removeMarioInElement(&S_eElem[*currentElem]);
             // and set nextElem and current to new surface
@@ -135,7 +220,7 @@ void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextB
             // copy next elem (a box here) in next surface after here
             cpDataInElement(&S_eElem[*nextBox], &S_eElem[*nextElem]);
             // copy current elem (here mario) to next elem (next surface)
-            cpDataInElement(&S_eElem[*nextElem], &S_eElem[*currentElem]);
+            callMarioCopy(&S_eElem[*nextElem], &S_eElem[*currentElem], move, dirFlag);
             // and finally remove data to current mario position by a null element .
             removeMarioInElement(&S_eElem[*currentElem]);
             // and set nextElem, nextBox to 0, and current to new surface
@@ -150,17 +235,17 @@ void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextB
             // no box we need to know if objFlag corresponding to the next surface or if we need to set them at mario position
             if(*objFlag != *currentElem){
                 // we need to remove objective image by mario image and set the current position in objFlag
-                cpDataInElement(&S_eElem[*nextElem], &S_eElem[*currentElem]);
+                callMarioCopy(&S_eElem[*nextElem], &S_eElem[*currentElem], move, dirFlag);
                 // remove mario
                 removeMarioInElement(&S_eElem[*currentElem]);
                 *currentElem = *nextElem;
                 *objFlag = *currentElem; // we save the position of the objective
                 *nextElem = 0;
             } else{
-                // we need to display a objective to mario
-                cpDataInElement(&S_eElem[*nextElem], &S_eElem[*currentElem]);
+                // copy mario to next
+                callMarioCopy(&S_eElem[*nextElem], &S_eElem[*currentElem], move, dirFlag);
                 // re set obj data
-                displayObjectifInSurface(&S_eElem[*objFlag]);
+                displayObjectifInSurface(&S_eElem[*currentElem]);
                 // update data
                 *currentElem = *nextElem;
                 *nextElem = 0;
@@ -172,21 +257,24 @@ void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextB
                 // a box and objective is the next surface we need to display the objective clear image .
                 displayObjectifClear(&S_eElem[*nextBox]);
                 // current elem go to next elem
-                cpDataInElement(&S_eElem[*nextElem], &S_eElem[*currentElem]);
+                callMarioCopy(&S_eElem[*nextElem], &S_eElem[*currentElem], move, dirFlag);
                 // remove mario
                 removeMarioInElement(&S_eElem[*currentElem]);
                 *currentElem = *nextElem;
                 *objFlag = 0; // we save the position of the objective
                 *nextElem = 0;
+                // and an objective is completed
+                *nbObjectif = *nbObjectif - 1;
             } else{
-                // we need to display a objective to mario
-                cpDataInElement(&S_eElem[*nextElem], &S_eElem[*currentElem]);
+                // copy mario to next
+                callMarioCopy(&S_eElem[*nextElem], &S_eElem[*currentElem], move, dirFlag);
                 // re set obj data
-                displayObjectifInSurface(&S_eElem[*objFlag]);
+                displayObjectifInSurface(&S_eElem[*currentElem]);
                 // update data
                 *currentElem = *nextElem;
                 *nextElem = 0;
                 *objFlag = 0;
+
             }
         }
 
@@ -248,6 +336,25 @@ int setNextTarget(int current, int move, char dirFlag){
 }
 
 /**
+ * This function set the number of objective the map has .
+ * @param MapToPlay Map The map chosen by the user .
+ * @return The number of objective map has .
+ */
+int getNbObjectif(Map *MapToPlay){
+    int static objectif = 0;
+    if(MapToPlay != NULL){
+        for(int i = 0; i < A_HALF_THOUS;i++){
+            if(MapToPlay->content[i] == E_GOAL){
+                objectif++;
+            }
+        }
+    }
+    return objectif;
+}
+
+
+
+/**
  * Call the next functions to set the differents vlaues before update the main windows .
  * @param S_eElem ELEMENT An pointer to the element sutructure where update and take data .
  * @param pRootWindow SDL_Surface An pointer to the main window .
@@ -259,7 +366,7 @@ int setNextTarget(int current, int move, char dirFlag){
  * @param nextBox int An pointer to the nextBox var corresponding to the next surface after the box .
  */
 void setMovement(ELEMENT *S_eElem, SDL_Surface *pRootWindow, SDL_Surface *sElem[],
-                int *currentElem, int *nextElem, char dirFlag, int move, int *nextBox){
+                int *currentElem, int *nextElem, char dirFlag, int move, int *nextBox, int *nbObjectif){
     // this flag need to be change but not re affected .
     int static objFlag = 0;
 
@@ -269,7 +376,7 @@ void setMovement(ELEMENT *S_eElem, SDL_Surface *pRootWindow, SDL_Surface *sElem[
             setPositionForElem(&S_eElem[*currentElem], dirFlag, move);
 
             // update position for next step
-            updateElement(S_eElem, currentElem, nextElem, nextBox, &objFlag);
+            updateElement(S_eElem, currentElem, nextElem, nextBox, &objFlag, move, dirFlag, nbObjectif);
             updateMainWindow(pRootWindow, sElem, S_eElem, *currentElem, *nextElem);
             break;
         case E_BOX:
@@ -282,19 +389,19 @@ void setMovement(ELEMENT *S_eElem, SDL_Surface *pRootWindow, SDL_Surface *sElem[
                 objFlag = 1;
             }
             // update position for next step
-            updateElement(S_eElem, currentElem, nextElem, nextBox, &objFlag);
+            updateElement(S_eElem, currentElem, nextElem, nextBox, &objFlag, move, dirFlag, nbObjectif);
             // update window
             updateMainWindow(pRootWindow, sElem, S_eElem, *currentElem, *nextElem);
             break;
         case E_GOAL:
             setPositionForElem(&S_eElem[*currentElem], dirFlag, move);
 
-            if(S_eElem[*nextBox].id == E_GOAL && objFlag == 0){
+            if(S_eElem[*nextElem].id == E_GOAL && objFlag == 0){
                 // we need to set objFlag to indicate is in the next surface
                 objFlag = 1;
             }
             // update position for next step
-            updateElement(S_eElem, currentElem, nextElem, nextBox, &objFlag);
+            updateElement(S_eElem, currentElem, nextElem, nextBox, &objFlag, move, dirFlag, nbObjectif);
             // update window
             updateMainWindow(pRootWindow, sElem, S_eElem, *currentElem, *nextElem);
             break;

@@ -200,12 +200,13 @@ void gameStartEvent(){
 
  void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario){
      int inGame = 1;
-     int nbObjClear = 0;
+     int nbObjClear = getNbObjectif(NULL);
      int next = 0;
      int nextBox = 0;
      int current = numSurfaceMario;
      SDL_Event event;
-     while(inGame){
+     while(inGame && nbObjClear != 0){
+
          SDL_WaitEvent(&event);
          switch(event.type){
              case SDL_QUIT:
@@ -226,10 +227,10 @@ void gameStartEvent(){
                          } else if(nextBox == 1){
                              // we push box need to know the possition after here
                              nextBox = 0;
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', NB_FRAME_IN_LINE, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', NB_FRAME_IN_LINE, &nextBox, &nbObjClear);
                              break;
                          } else{
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', NB_FRAME_IN_LINE, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', NB_FRAME_IN_LINE, &nextBox, &nbObjClear);
                              break;
                          }
                      case SDLK_DOWN:
@@ -240,10 +241,10 @@ void gameStartEvent(){
                          } else if(nextBox == 1){
                              // we push box need to know the possition after here
                              nextBox = 0;
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', NB_FRAME_IN_LINE, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', NB_FRAME_IN_LINE, &nextBox, &nbObjClear);
                              break;
                          } else{
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', NB_FRAME_IN_LINE, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', NB_FRAME_IN_LINE, &nextBox, &nbObjClear);
                              break;
                          }
                      case SDLK_RIGHT:
@@ -254,10 +255,10 @@ void gameStartEvent(){
                          } else if(nextBox == 1){
                              // we push box need to know the possition after here
                              nextBox = 0;
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', 1, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', 1, &nextBox, &nbObjClear);
                              break;
                          } else{
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', 1, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '+', 1, &nextBox, &nbObjClear);
                              break;
                          }
                      case SDLK_LEFT:
@@ -268,19 +269,21 @@ void gameStartEvent(){
                          } else if(nextBox == 1){
                              // we push box need to know the possition after here
                              nextBox = 0;
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', 1, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', 1, &nextBox, &nbObjClear);
                              break;
                          } else{
-                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', 1, &nextBox);
+                             setMovement(elem, pRootWindow, sElem, &current, &next, '-', 1, &nextBox, &nbObjClear);
                              break;
                          }
+                     case SDLK_F9:
+                         inGame = 0;
                      default:
                          continue;
                  }// end event.key...
              default:
                  ;
          } // end event.type
-         //inGame = 0;
+
      }
 }
 

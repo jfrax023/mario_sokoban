@@ -249,11 +249,11 @@ void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuCho
  * This function set a transition image between map selection and game start .
  * @param pRootWindow SDL_Surface The main window .
  */
-void showOverlay(SDL_Surface *pRootWindow){
+void showOverlay(SDL_Surface *pRootWindow, char path[]){
     SDL_Surface *sOverlay = NULL;
     SDL_Rect overlayPosition;
 
-    sOverlay = IMG_Load(OVERLAY_PATH);
+    sOverlay = IMG_Load(path);
     if(sOverlay == NULL){
         SDL_Quit();
         exit(EXIT_FAILURE);
@@ -327,6 +327,9 @@ void updateMainWindow(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *S
                 setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 1);
                 break;
             case E_GOAL:
+                setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 1);
+                break;
+            case E_BOX_OK:
                 setValueForSurface(pRootWindow, sElem[i], S_eElem[i], 1);
                 break;
             default:

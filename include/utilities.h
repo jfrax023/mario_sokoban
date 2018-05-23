@@ -60,6 +60,7 @@
 #define WALL_PATH "img/mur.jpg"
 #define GOAL_PATH "img/objectif.png"
 #define OVERLAY_PATH "img/overlay.png"
+#define END_GAME_PATH "img/end_game.png"
 
 
 // define letter for elements
@@ -82,6 +83,10 @@
 // file extention
 #define E_TEXT ".txt"
 
+// objectif by difficulty
+#define OBJ_EASY 3
+#define OBJ_MEDIUM 4
+#define OBJ_HARD 5
 // Structure definition
 /**
  * Just a simple enumeration where we list the difficulty possible .
