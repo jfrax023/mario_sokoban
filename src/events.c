@@ -7,6 +7,9 @@
 #include <SDL/SDL.h>
 #include "utilities.h"
 #include "game.h"
+#include "windows.h"
+#include "edition.h"
+#include "windows.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -141,37 +144,6 @@ void mapMenuEventManager(Map *pMap, int *current, int *menuChoice){
     } // end again
  }
 
- // TMP REMOVE THEM LATER
- /* This code need to be in the edition fonctionnality*/
- int waitToBackEdition(){
-     // var
-     SDL_Event event;
-     int again = 1;
-     while(again){
-         SDL_WaitEvent(&event);
-         // wait a f9 event to back in main menu
-         switch(event.type){
-             case SDL_KEYDOWN:
-                 switch(event.key.keysym.sym){
-                     case SDLK_F9:
-                         again = 0;
-                         break;
-                     default:
-                         again = 1;
-                         break;
-                 } // end switch key
-                 break;
-             case SDL_QUIT:
-                 SDL_Quit();
-                 exit(EXIT_SUCCESS);
-             default:
-                 again = 1;
-                 break;
-         } // end switch type
-     } // end while
-     return 0;
- }
-
 /**
  * Juste wait a return event to start game in main
  */
@@ -198,6 +170,13 @@ void gameStartEvent(){
      }
  }
 
+ /**
+  * Event manager for game event .
+  * @param pRootWindow SDL_Surface An pointer to the main window .
+  * @param sElem SDL_Surface An pointer to an array of surface corresponding to elements surface .
+  * @param elem ELEMENT An pointer to the array of Element structure .
+  * @param numSurfaceMario int The position of mario in map .
+  */
  void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario){
      int inGame = 1;
      int nbObjClear = getNbObjectif(NULL);
@@ -284,8 +263,101 @@ void gameStartEvent(){
                  ;
          } // end event.type
 
-     }
+     } // End main while
+
 }
+
+/**
+ * Event manager for edition mode .
+ * @param pRootWindow SDL_Surface An pointer to the main window .
+ * @param sElem SDL_Surface An pointer to an array of surface corresponding to elements surface .
+ * @param elem ELEMENT An pointer to the array of Element structure .
+ * @param cursor int An pointer to the variable cursor representing the current position or element where we work .
+ * @param tmpChoice int An pointer on the variable tmpChoice to tell continue or get out while .
+ * @param nbObj int An pointer on the variable nbObjectif .
+ */
+int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj){
+
+    SDL_Event event;
+    int again = 1;
+    int static numImage = 0;
+    int next = 0;
+    while(again){
+        SDL_WaitEvent(&event);
+        switch(event.type){
+            case SDL_QUIT:
+                SDL_Quit();
+                exit(EXIT_SUCCESS);
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym){
+                    case SDLK_LEFT:
+                        // check if we can access to left
+                        if(!setNextTarget(*cursor, 1, '-'))
+                            continue;
+                        // set next target
+                        next = setNextTarget(*cursor, 1, '-');
+                        // change a color if just white frame
+                        checkAndUpdatePathElement(elem, *cursor, next);
+                        numImage = 0;
+                        return  next;
+                    case SDLK_RIGHT:
+                        if(!setNextTarget(*cursor, 1, '+'))
+                            continue;
+                        next = setNextTarget(*cursor, 1, '+');
+                        checkAndUpdatePathElement(elem, *cursor, next);
+
+                        //showChangeInMapEdit(pRootWindow, sElem, elem);
+                        numImage = 0;
+                        return next;
+                    case SDLK_UP:
+                        if(!setNextTarget(*cursor, NB_FRAME_IN_LINE, '-'))
+                            continue;
+                        next = setNextTarget(*cursor, NB_FRAME_IN_LINE, '-');
+                        checkAndUpdatePathElement(elem, *cursor, next);
+                        numImage = 0;
+                        return next;
+                    case SDLK_DOWN:
+                        if(!setNextTarget(*cursor, NB_FRAME_IN_LINE, '+'))
+                            continue;
+                        next = setNextTarget(*cursor, NB_FRAME_IN_LINE, '+');
+                        checkAndUpdatePathElement(elem, *cursor, next);
+                        numImage = 0;
+                        return next;
+                    case SDLK_SPACE:
+                        /* we have 7 image to display but if mario is already displayed we use only
+                         the three first image (wall, obj, caisse) and then the user have placed nbObjectives and boxes
+                         we remove them too .
+                         */
+                        checkElementInEditMap(elem, *nbObj, &numImage, *cursor);
+                        if((numImage) == 0){
+                            // the case 0 is a white frame so we set elem[*cursor].id to " " and pathImg to null
+                            elem[*cursor].id = 0;
+                            strcpy(elem[*cursor].pathImg, "null");
+                            numImage++;
+                            return 0;
+
+                        } else{
+                            // update the two interesting variable in elem .
+                            elem[*cursor].id = getPathImage(numImage, elem[*cursor].pathImg);
+                            numImage++;
+                            return 0;
+                        }
+                    case SDLK_F9:
+                        again = 0;
+                        *tmpChoice = 0;
+                        break;
+                    case SDLK_F10:
+                        // here need to save new map
+                        *tmpChoice = 0;
+                    default:
+                        continue;
+                }
+            default:
+                continue;
+        }
+    }
+
+ }
 
 
 

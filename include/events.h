@@ -7,6 +7,7 @@
  * -- void mapMenuEventManager(Map *pMap, int *current, int *menuChoice);
  * -- gameStartEvent();
  * -- void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario);
+ * -- int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj);
  */
 
 #ifndef MARIO_SOKOBAN_EVENTS_H
@@ -37,16 +38,30 @@ int getUserChoice(int pFlag);
 void mapMenuEventManager(Map *pMap, int *current, int *menuChoice);
 
 /**
- * TMP just a tmp function to back menu 1 from edition
- * @return An flag to put in menuChoice variable .
- */
-int waitToBackEdition();
-
-/**
  * Juste wait a return event to start game in main
  */
 void gameStartEvent();
 
+/**
+ * Event manager for game event .
+ * @param pRootWindow SDL_Surface An pointer to the main window .
+ * @param sElem SDL_Surface An pointer to an array of surface corresponding to elements surface .
+ * @param elem ELEMENT An pointer to the array of Element structure .
+ * @param numSurfaceMario int The position of mario in map .
+ */
 void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *elem, int numSurfaceMario);
+
+/**
+ * Event manager for edition mode .
+ * @param pRootWindow SDL_Surface An pointer to the main window .
+ * @param sElem SDL_Surface An pointer to an array of surface corresponding to elements surface .
+ * @param elem ELEMENT An pointer to the array of Element structure .
+ * @param cursor int An pointer to the variable cursor representing the current position or element where we work .
+ * @param tmpChoice int An pointer on the variable tmpChoice to tell continue or get out while .
+ * @param nbObj int An pointer on the variable nbObjectif .
+ */
+int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj);
+
+
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_EVENTS_H

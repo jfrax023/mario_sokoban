@@ -335,6 +335,7 @@ int setNextTarget(int current, int move, char dirFlag){
     }
 }
 
+
 /**
  * This function set the number of objective the map has .
  * @param MapToPlay Map The map chosen by the user .

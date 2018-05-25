@@ -11,6 +11,8 @@
 #include "events.h"
 #include <string.h>
 #include "game.h"
+#include "edition.h"
+#include "windows.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -35,6 +37,101 @@ void cleanWindow(SDL_Surface *sWindow, int flipFlag){
         SDL_Flip(sWindow);
     }
 }
+
+
+/**
+ * This function update the current map with a new image of an element chosen by user .
+ * @param pRootWindow SDL_Surface The main window .
+ * @param psElem SDL_Surface An pointer to the surface array corresponding to the elements of the game .
+ * @param PS_Elem ELEMENT An pointer to the array of structure element .
+ * @param currentFlag int the current surface to update .
+ * @param cursor An pointer to the variable cursor to representing the current elements where we work .
+ * @param img A number who tell what the image we need to display .
+ */
+void showChangeInMapEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem){
+    // clean
+
+    SDL_Rect posElem;
+    posElem.x = 0;
+    posElem.y = 0;
+
+    //for(int i = 0; i < MAP_MAX_SIZE; i++){
+    if(strcmp(PS_Elem->pathImg, "null") == 0){
+        // create surface
+        psElem = SDL_CreateRGBSurface(SDL_HWSURFACE, E_WIDTH, E_HEIGHT, 32, 0, 0, 0, 0);
+        checkIfSurfaceIsNull(psElem, "Surface is null .");
+        // position
+        posElem.x = (u_int16_t) PS_Elem->x;
+        posElem.y = (u_int16_t) PS_Elem->y;
+        // set value
+        SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
+        SDL_BlitSurface(psElem, NULL, pRootWindow, &posElem);
+        return;
+
+    } else if(strcmp(PS_Elem->pathImg, "green") == 0){
+
+        psElem = SDL_CreateRGBSurface(SDL_HWSURFACE, E_WIDTH, E_HEIGHT, 32, 0, 0, 0, 0);
+        checkIfSurfaceIsNull(psElem, "Surface is null .");
+
+        posElem.x = (u_int16_t) PS_Elem->x;
+        posElem.y = (u_int16_t) PS_Elem->y;
+
+
+        SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 93, 206, 68));
+        SDL_BlitSurface(psElem, NULL, pRootWindow, &posElem);
+        return;
+    }
+
+    posElem.x = (u_int16_t) PS_Elem->x;
+    posElem.y = (u_int16_t) PS_Elem->y;
+
+    psElem = IMG_Load(PS_Elem->pathImg);
+    checkIfSurfaceIsNull(psElem, "Surface is null .");
+
+
+    setImageInWindow(pRootWindow, psElem, &posElem, 0);
+
+
+}
+
+/**
+ * This function display the map who will be editing by the user .Actually is just a white surface end one green surface
+ *  representing the cursor where we work .
+ * @param pRootWindow SDL_Surface The main window .
+ * @param psElem SDL_Surface An pointer to the surface array corresponding to the elements of the game .
+ * @param PS_Elem ELEMENT An pointer to the array of structure element .
+ * @param cursor int An pointer to the variable cursor to representing the current elements where we work .
+ */
+void setValueForMapToEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem,
+                          int currentFlag, int cursor){
+    SDL_Rect positionSurface;
+
+    psElem = SDL_CreateRGBSurface(SDL_HWSURFACE, E_WIDTH, E_HEIGHT, 32, 0, 0, 0, 0);
+    checkIfSurfaceIsNull(psElem, "Surface is null");
+    if(currentFlag == cursor){
+        positionSurface.y = 0;
+        positionSurface.x = 0;
+        SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 93, 206, 68));
+        SDL_BlitSurface(psElem, NULL, pRootWindow, &positionSurface);
+        initElementArray(PS_Elem, positionSurface.x, positionSurface.y);
+        positionSurface.x += E_WIDTH;
+        return;
+    }
+    // change line need update y
+    if(currentFlag % (NB_FRAME_IN_LINE) == 0){
+        positionSurface.x = 0;
+        positionSurface.y += E_HEIGHT;
+        SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
+        SDL_BlitSurface(psElem, NULL, pRootWindow, &positionSurface);
+        initElementArray(PS_Elem, positionSurface.x, positionSurface.y);
+        return;
+    }
+    SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
+    SDL_BlitSurface(psElem, NULL, pRootWindow, &positionSurface);
+    initElementArray(PS_Elem, positionSurface.x, positionSurface.y);
+    positionSurface.x += E_WIDTH;
+}
+
 
 /**
  * Set an image in the main window according to the parameters passed in argument .
@@ -347,23 +444,6 @@ void updateMainWindow(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *S
 
 }
 
-void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]){
-    SDL_Surface *sImgMenu = NULL;
-    SDL_Rect imgMenuPosition;
 
-    // create menu surface
-    sImgMenu = IMG_Load(imgPath);
-    checkIfSurfaceIsNull(sImgMenu, "Image not found ");
-
-    // put menu image to sImgMenu surface
-    setImageInWindow(sRootWindow, sImgMenu, &imgMenuPosition, 1);
-    // update window
-    SDL_Flip(sRootWindow);
-
-    // wait to back to menu 1
-    *pUserChoice = waitToBackEdition();
-    // free memory
-    SDL_FreeSurface(sImgMenu);
-}
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -12,6 +12,12 @@
  * -- void updateMainWindow(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *S_eElem,
  *                    int nextElem, int nextBox);
  * -- void setValueForSurface(SDL_Surface *pRootWindow, SDL_Surface *sElem, ELEMENT S_eElem, int img);
+ * -- int displayMenuDifficulty(SDL_Surface *pRootWindow);
+ * -- void diplayMapToEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, int cursor);
+ * -- void showChangeInMapEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem);
+ * -- void setValueForMapToEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem,
+ *                        int currentFlag, int cursor);
+ * -- void setValueForSurface(SDL_Surface *pRootWindow, SDL_Surface *sElem, ELEMENT S_eElem, int img);
  * --
 */
 
@@ -46,11 +52,23 @@ void setImageInWindow(SDL_Surface *sRoot, SDL_Surface *sImg, SDL_Rect *positionI
 void createMenu(SDL_Surface *sRootWindow, int *pUserMenuChoice, char imgPath[]);
 
 /**
+ * This function update the current map with a new image of an element chosen by user .
+ * @param pRootWindow SDL_Surface The main window .
+ * @param psElem SDL_Surface An pointer to the surface array corresponding to the elements of the game .
+ * @param PS_Elem ELEMENT An pointer to the array of structure element .
+ * @param currentFlag int the current surface to update .
+ * @param cursor An pointer to the variable cursor to representing the current elements where we work .
+ * @param img A number who tell what the image we need to display .
+ */
+void showChangeInMapEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem);
+
+/**
  * This function clean the current main window in him re color and flip them .
  * @param sWindow SDL_Surface The main window .
  * @param flipFlag int A flag corresponding to tell if we need to SDL_Flip this surface or not, 0 dont flip 1 flip .
  */
 void cleanWindow(SDL_Surface *sWindow, int flipFlag);
+
 
 /**
  * This function receive a map in parameter and translate them to an SDL window .
@@ -67,6 +85,16 @@ void displayMap(Map *pMap, SDL_Surface *pRootWindow, int *current, int *pMenuCho
  * @param pRootWindow SDL_Surface The main window .
  */
 void showOverlay(SDL_Surface *pRootWindow, char path[]);
+
+/**
+ * This function display the map who will be editing by the user .Actually is just a white surface end one green surface
+ *  representing the cursor where we work .
+ * @param pRootWindow SDL_Surface The main window .
+ * @param psElem SDL_Surface An pointer to the surface array corresponding to the elements of the game .
+ * @param cursor int An pointer to the variable cursor to representing the current elements where we work .
+ */
+void setValueForMapToEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem,
+                          int currentFlag, int cursor);
 
 /**
  * Set a data in surface .
@@ -88,7 +116,6 @@ void setValueForSurface(SDL_Surface *pRootWindow, SDL_Surface *sElem, ELEMENT S_
 void updateMainWindow(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *S_eElem, int currentElem, int nextElem);
 
 
-void tmpShowEdition(SDL_Surface *sRootWindow, int *pUserChoice, char imgPath[]);
 
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_WINDOWS_H

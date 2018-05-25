@@ -11,7 +11,8 @@
 #include <SDL/SDL.h>
 #include "windows.h"
 #include "file_helper.h"
-
+#include "edition.h"
+#include <time.h>
 //----------------------------------------------------------------------------------------------------------------------
 
 /**
@@ -65,6 +66,43 @@ void setPreviousAndNext(Map *map,int  nbFile){
 }
 
 /**
+ * This function return the path for an image based on the num received .
+ * @param numImage An number corresponding to the image selected .
+ * @param pathImg A string where store the path .
+ * @return char A letter representing the image in map .
+ */
+char getPathImage(int numImage, char pathImg[]){
+    switch(numImage){
+        case 0:
+            strcpy(pathImg, "null");
+            break;
+        case 1:
+            strcpy(pathImg, WALL_PATH);
+            return E_WALL;
+        case 2:
+            strcpy(pathImg, BOX_PATH);
+            return E_BOX;
+        case 3:
+            strcpy(pathImg, GOAL_PATH);
+            return E_GOAL;
+        case 4:
+            strcpy(pathImg, MARIO_TOP_PATH);
+            return E_MARIO_TOP;
+        case 5:
+            strcpy(pathImg, MARIO_RIGHT_PATH);
+            return E_MARIO_RIGHT;
+        case 6:
+            strcpy(pathImg, MARIO_BOT_PATH);
+            return E_MARIO_BOT;
+        case 7:
+            strcpy(pathImg, MARIO_LEFT_PATH);
+            return E_MARIO_LEFT;
+        default:
+            ;
+    }
+}
+
+/**
  * Copy one map structure to another
  * @param MapToPlay Map An pointer on the destination .
  * @param copy Map The map to copy .
@@ -76,6 +114,27 @@ void copyMap(Map *MapToPlay, Map copy){
     MapToPlay->next = -1;
     strcpy(MapToPlay->name, copy.name);
     strcpy(MapToPlay->content, copy.content);
+}
+
+/**
+ * Initialize the Map structure with a first value .
+ * @param editMap Map An pointer to currentMap variable .
+ * @param difficulty A number corresponding to the difficulté chosen .
+ */
+void initMapStructForEdit(Map *pEditMap, int difficulty){
+    srand(time(NULL));
+    int num1 = rand();
+    int num2 = rand();
+    char name[A_HALF_HUNDR] = "";
+    sprintf(name, "%dspe%d.txt", num1, num2);
+    strcpy(pEditMap->name, name);
+    pEditMap->number = 0;
+    pEditMap->next = 0;
+    pEditMap->previous = 0;
+    pEditMap->difficulty = difficulty;
+    for(int i = 0; i < A_HALF_THOUS; i++){
+        pEditMap->content[i] = E_NULL;
+    }
 }
 
 
@@ -204,7 +263,6 @@ void getMapData(SDL_Surface *pRootWindow, Map *pMapToPlay, int *pMenuChoice, cha
 void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
     /* var and pointers etc ... */
     int menuChoice[3] = {0};
-    int aBgColor[] = {255, 255, 255};
     int stayIn = 1;
     char levelPath[A_HALF_FIFTY] = "";
     Difficulty LvlMode = EASY;
@@ -221,8 +279,10 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
 
         /*manage the edition choice */
         if(menuChoice[0] == 2){
+            // function management edition .
+            diplayEditionMode(sRootWindow, &menuChoice[0]);
             /* here we try to display an image and allow to back to main menu with f9 key */
-            tmpShowEdition(sRootWindow, &menuChoice[0], EDITION_MENU_PATH);
+            //tmpShowEdition(sRootWindow, &menuChoice[0], EDITION_MENU_PATH);
             /* clean window */
             cleanWindow(sRootWindow, 0);
             continue;
@@ -257,6 +317,107 @@ void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay){
             stayIn = 0;
         }
     } // end while
+}
+
+
+/**
+ * check if mario is already in map and cannot be displayed another time .
+ * @param S_elem ELEMENT An pointer to the array of element structure .
+ * @param int The current position represented by cursor variable .
+ * @return 1 if mario is already here 0 else .
+ */
+int checkIfMarioIsIn(ELEMENT *S_elem, int cursor){
+    int tmpMario = 0;
+    for(int i = 0; i < MAP_MAX_SIZE; i++){
+        if(i == cursor){
+            continue;
+        }
+        if(S_elem[i].id == E_MARIO_TOP || S_elem[i].id == E_MARIO_RIGHT || S_elem[i].id == E_MARIO_BOT || S_elem[i].id == E_MARIO_LEFT){
+            tmpMario++;
+        }
+    }
+    if(tmpMario >= 1){
+        return 1;
+    }
+    return 0;
+}
+
+
+/**
+ * check if objectives and box is already in map and cannot be displayed another time .
+ * @param S_elem ELEMENT An pointer to the array of element structure .
+ * @param nbObjectif int The number of objectives the map have depending a difficulty selected .
+ * @return 1 if mario is already here 0 else .
+ */
+int checkIfObjIsHere(ELEMENT *S_elem, int nbObjectif){
+    int tmpObj = 0;
+    for(int i = 0; i < MAP_MAX_SIZE; i++){
+        if(S_elem[i].id == E_GOAL){
+            tmpObj++;
+        }
+    }
+    if(tmpObj >= nbObjectif){
+        return 1;
+    }
+    return 0;
+}
+
+/**
+ * check if objectives and box is already in map and cannot be displayed another time .
+ * @param S_elem ELEMENT An pointer to the array of element structure .
+ * @param nbObjectif int The number of objectives the map have depending a difficulty selected .
+ * @return 1 if mario is already here 0 else .
+ */
+int checkIfBoxIsHere(ELEMENT *S_elem, int nbObjectif){
+    int tmpCaisse = 0;
+    for(int i = 0; i < MAP_MAX_SIZE; i++){
+        if(S_elem[i].id == E_BOX){
+            tmpCaisse++;
+        }
+    }
+    if(tmpCaisse >= nbObjectif){
+        return 1;
+    }
+    return 0;
+}
+
+
+/**
+ * Check and update the image is possible to diplay in relation with the presence of elements or not .
+ * @param S_elem ELEMENT An pointer to the array of structure element .
+ * @param nbObj int A number of objectives the mode have .
+ * @param numImage An pointer to the variable numImage .
+ * @param int The current element represented by cursor variable .
+ */
+void checkElementInEditMap(ELEMENT *S_elem, int nbObj, int *numImage, int cursor){
+    if(!checkIfMarioIsIn(S_elem, cursor)){
+        if(*numImage > 7){
+            *numImage = 0;
+        }
+    } else{
+        if(!checkIfObjIsHere(S_elem, nbObj) && !checkIfBoxIsHere(S_elem, nbObj)){
+            if(*numImage > 3){
+                *numImage = 0;
+            }
+            // box already here objectives not .
+        } else if(checkIfBoxIsHere(S_elem, nbObj) && !checkIfObjIsHere(S_elem, nbObj)){
+            if(*numImage > 3){
+                *numImage = 0;
+            } else if(*numImage == 2){
+                // skip the box image
+                *numImage = 3;
+            }
+        } else if(checkIfObjIsHere(S_elem, nbObj) && !checkIfBoxIsHere(S_elem, nbObj)){
+            if(*numImage > 2){
+                *numImage = 0;
+            }
+        } else{
+            if(*numImage > 1){
+                *numImage = 0;
+            }
+        }
+    }
+
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/hard/prison.txt
 # Included directories from a path variable
 include_directories(${SDL_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_DIRS})
 # Included executable by using a defined variable set at top
-add_executable(mario_sokoban main.c include/windows.h include/utilities.h src/windows.c include/events.h src/events.c src/error_helper.c include/error_helper.h include/file_helper.h src/file_helper.c src/utilities.c include/game.h src/game.c)
+add_executable(mario_sokoban main.c include/windows.h include/utilities.h src/windows.c include/events.h src/events.c src/error_helper.c include/error_helper.h include/file_helper.h src/file_helper.c src/utilities.c include/game.h src/game.c src/edition.c include/edition.h)
 
 # On link notre librairie avec notre projet le nom de la lib et encore fournit via une variable mise à disposition
 target_link_libraries(mario_sokoban ${SDL_LIBRARY} ${SDL_IMAGE_LIBRARIES})

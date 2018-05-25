@@ -19,6 +19,14 @@
  * - void getMapData(SDL_Surface *pRootWindow, Map *pMapToPlay, int *pMenuChoice, char levelPath[], int fLvl); Fonction for the third menu .
  * - void setPreviousAndNext(Map *map,int  nbFile); Set the previous an next variable in Map structure .
  * - void createMapMenu(SDL_Surface *sRootWindow, Map *MapToPlay, Map *PS_tmpMap, int *menuChoice, int nbFile);
+ * - void initMapStructForEdit(Map *editMap, int difficulty);
+ * - char getPathImage(int numImage, char pathImg[]);
+ * - void initMapStructForEdit(Map *pEditMap, int difficulty);
+ * - int checkIfMarioIsIn(ELEMENT *S_elem, int cursor);
+ * - int checkIfObjIsHere(ELEMENT *S_elem, int nbObjectif);
+ * - int checkIfBoxIsHere(ELEMENT *S_elem, int nbObjectif);
+ * - void checkElementInEditMap(ELEMENT *S_elem, int nbObj, int *numImage, int cursor);
+ * -
  */
 
 #ifndef MARIO_SOKOBAN_UTILITIES_H
@@ -146,6 +154,13 @@ void copyMap(Map *MapToPlay, Map copy);
  */
 void setDifficulty(int userChoice, Difficulty *LvlMode, char lvlPath[]);
 
+/**
+ * This function return the path for an image based on the num received .
+ * @param numImage An number corresponding to the image selected .
+ * @param pathImg A string where store the path .
+ * @return char A letter representing the image in map .
+ */
+char getPathImage(int numImage, char pathImg[]);
 
 /**
  * This function display allow to navigate in the differents menu of selection .We have 3 menu :
@@ -159,7 +174,23 @@ void setDifficulty(int userChoice, Difficulty *LvlMode, char lvlPath[]);
  */
 void showMenuAndSelectMap(SDL_Surface *sRootWindow, Map *MapToPlay);
 
+/**
+ * Initialize the Map structure with a first value .
+ * @param editMap Map An pointer to currentMap variable .
+ * @param difficulty A number corresponding to the difficulté chosen .
+ */
+void initMapStructForEdit(Map *pEditMap, int difficulty);
 
+/**
+ * This function define an array of Map structure to store the data corresponding to an map located in a file .After
+ *  she create this array she call  functions to set a différents variable in like a name and content .After that we
+ *  can call the function to display a third menu with the data we have stored in this array .
+ * @param pRootWindow SDL_Surface An pointer to main window .
+ * @param pMapToPlay Map An pointer to the Map structure where we will storing the map the user have chose .
+ * @param pMenuChoice int An pointer to the array where we store the choice made by user .
+ * @param levelPath char The path where search map
+ * @param fLvl int The difficulty chosen by user .
+ */
 void getMapData(SDL_Surface *pRootWindow, Map *pMapToPlay, int *pMenuChoice, char levelPath[], int fLvl);
 
 /**
@@ -181,6 +212,41 @@ void setPreviousAndNext(Map *map,int  nbFile);
  * @param fLvl int The difficulty chosen by user .
  */
 void createMapMenu(SDL_Surface *sRootWindow, Map *MapToPlay, Map *PS_tmpMap, int *menuChoice, int nbFile);
+
+/**
+ * check if mario is already in map and cannot be displayed another time .
+ * @param S_elem ELEMENT An pointer to the array of element structure .
+ * @param int The current position represented by cursor variable .
+ * @return 1 if mario is already here 0 else .
+ */
+int checkIfMarioIsIn(ELEMENT *S_elem, int cursor);
+
+
+/**
+ * check if objectives and box is already in map and cannot be displayed another time .
+ * @param S_elem ELEMENT An pointer to the array of element structure .
+ * @return 1 if mario is already here 0 else .
+ */
+int checkIfObjIsHere(ELEMENT *S_elem, int nbObjectif);
+
+/**
+ * check if objectives and box is already in map and cannot be displayed another time .
+ * @param S_elem ELEMENT An pointer to the array of element structure .
+ * @param nbObjectif int The number of objectives the map have depending a difficulty selected .
+ * @return 1 if mario is already here 0 else .
+ */
+int checkIfBoxIsHere(ELEMENT *S_elem, int nbObjectif);
+
+/**
+ * Check and update the image is possible to diplay in relation with the presence of elements or not .
+ * @param S_elem ELEMENT An pointer to the array of structure element .
+ * @param nbObj int A number of objectives the mode have .
+ * @param numImage An pointer to the variable numImage .
+ * @param int The current element represented by cursor variable .
+ */
+void checkElementInEditMap(ELEMENT *S_elem, int nbObj, int *numImage, int cursor);
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_UTILITIES_H
