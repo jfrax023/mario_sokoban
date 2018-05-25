@@ -20,20 +20,17 @@ if(!SDL_IMAGE_FOUND)
     message(FATAL_ERROR "Lib SDL_image not found")
 endif ()
 # copy level
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/easy/jungle.txt
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/easy/)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/easy/cage.txt
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/easy/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/easy/)
 # medium
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/medium/garden.txt
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/medium/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/medium/)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/medium/market.txt
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/medium/)
+
 # hard
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/hard/oasis.txt
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/hard/
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/hard/)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/levels/hard/prison.txt
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/levels/hard/)
+
 # Included directories from a path variable
 include_directories(${SDL_INCLUDE_DIR} ${SDL_IMAGE_INCLUDE_DIRS})
 # Included executable by using a defined variable set at top

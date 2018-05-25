@@ -92,9 +92,10 @@ void showOverlay(SDL_Surface *pRootWindow, char path[]);
  * @param pRootWindow SDL_Surface The main window .
  * @param psElem SDL_Surface An pointer to the surface array corresponding to the elements of the game .
  * @param cursor int An pointer to the variable cursor to representing the current elements where we work .
+ * @param SDL_Rect An pointer to the variable posSurface for position of this surface .
  */
 void setValueForMapToEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem,
-                          int currentFlag, int cursor);
+                          int currentFlag, int cursor, SDL_Rect *positionSurface);
 
 /**
  * Set a data in surface .

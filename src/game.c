@@ -354,6 +354,32 @@ int getNbObjectif(Map *MapToPlay){
 }
 
 
+/**
+ * Set the next position for edit mode .
+ * @param cursor The current surface .
+ * @param move A number corresponding to the direction where we going .
+ * @param dirFlag A symbole + or - to said if we move forward or back .
+ * @return int The next position .
+ */
+int setNextForEdit(int cursor, int move, char dirFlag){
+
+    if(dirFlag == '+'){
+        // left right
+        if(cursor + move > (MAP_MAX_SIZE)){
+            return -1;
+        } else{
+            return cursor + move;
+        }
+    } else{
+        // left right
+        if(cursor - move < 0){
+            return -1;
+        } else{
+            return cursor - move;
+        }
+
+    }
+}
 
 /**
  * Call the next functions to set the differents vlaues before update the main windows .

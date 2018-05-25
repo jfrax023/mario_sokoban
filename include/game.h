@@ -19,6 +19,7 @@
  * -- void copyMarioLeft(ELEMENT *S_eTarget, ELEMENT *S_eMario);
  * -- void callMarioCopy(ELEMENT *S_eTarget, ELEMENT *S_eMario, int move, char dirFlag);
  * -- int getNbObjectif(Map *MapToPlay);
+ * -- int setNextForEdit(int cursor, int move, char dirFlag);
  */
 
 #ifndef MARIO_SOKOBAN_GAME_H
@@ -129,6 +130,16 @@ void updateElement(ELEMENT *S_eElem, int *currentElem, int *nextElem, int *nextB
  * @param S_Elem ELEMENT An pointer to the element to update .
  */
 void removeMarioInElement(ELEMENT *S_Elem);
+
+/**
+ * Set the next position for edit mode .
+ * @param cursor The current surface .
+ * @param move A number corresponding to the direction where we going .
+ * @param dirFlag A symbole + or - to said if we move forward or back .
+ * @return int The next position .
+ */
+int setNextForEdit(int cursor, int move, char dirFlag);
+
 
 /**
  * Set new position for an element or more .

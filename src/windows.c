@@ -101,35 +101,39 @@ void showChangeInMapEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT 
  * @param psElem SDL_Surface An pointer to the surface array corresponding to the elements of the game .
  * @param PS_Elem ELEMENT An pointer to the array of structure element .
  * @param cursor int An pointer to the variable cursor to representing the current elements where we work .
+ * @param SDL_Rect An pointer to the variable posSurface for position of this surface .
  */
 void setValueForMapToEdit(SDL_Surface *pRootWindow, SDL_Surface *psElem, ELEMENT *PS_Elem,
-                          int currentFlag, int cursor){
-    SDL_Rect positionSurface;
+                          int currentFlag, int cursor, SDL_Rect *positionSurface){
+
 
     psElem = SDL_CreateRGBSurface(SDL_HWSURFACE, E_WIDTH, E_HEIGHT, 32, 0, 0, 0, 0);
     checkIfSurfaceIsNull(psElem, "Surface is null");
     if(currentFlag == cursor){
-        positionSurface.y = 0;
-        positionSurface.x = 0;
         SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 93, 206, 68));
-        SDL_BlitSurface(psElem, NULL, pRootWindow, &positionSurface);
-        initElementArray(PS_Elem, positionSurface.x, positionSurface.y);
-        positionSurface.x += E_WIDTH;
+        SDL_BlitSurface(psElem, NULL, pRootWindow, positionSurface);
+        initElementArray(PS_Elem, positionSurface->x, positionSurface->y);
+        positionSurface->x += E_WIDTH;
         return;
     }
     // change line need update y
-    if(currentFlag % (NB_FRAME_IN_LINE) == 0){
-        positionSurface.x = 0;
-        positionSurface.y += E_HEIGHT;
-        SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
-        SDL_BlitSurface(psElem, NULL, pRootWindow, &positionSurface);
-        initElementArray(PS_Elem, positionSurface.x, positionSurface.y);
-        return;
+    if(currentFlag != 0){
+        if(currentFlag % NB_FRAME_IN_LINE == 0){
+            // end of line need to update y
+            positionSurface->y += E_HEIGHT;
+            positionSurface->x = 0;
+            // and blit, update width
+            SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
+            SDL_BlitSurface(psElem, NULL, pRootWindow, positionSurface);
+            initElementArray(PS_Elem, positionSurface->x, positionSurface->y);
+            positionSurface->x += E_WIDTH;
+            return;
+        }
     }
     SDL_FillRect(psElem, NULL, SDL_MapRGB(pRootWindow->format, 255, 255, 255));
-    SDL_BlitSurface(psElem, NULL, pRootWindow, &positionSurface);
-    initElementArray(PS_Elem, positionSurface.x, positionSurface.y);
-    positionSurface.x += E_WIDTH;
+    SDL_BlitSurface(psElem, NULL, pRootWindow, positionSurface);
+    initElementArray(PS_Elem, positionSurface->x, positionSurface->y);
+    positionSurface->x += E_WIDTH;
 }
 
 

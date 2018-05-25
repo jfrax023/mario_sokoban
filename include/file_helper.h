@@ -6,6 +6,9 @@
  * -- void initMap(FileName *map, int nbInit); Initialize a Map structure
  * -- void setNameInMap(char dirPath[], char fExt[] ,FileName *map); Set correct value in Map structure .
  * -- void setContentByFileName(char dirPath[], Map *map); Open a file and extract the content and put them in Map structure .
+ * -- void saveMapInDir(char directory[], char fileName[], ELEMENT *S_elem, char openMode);
+ * -- int checkFileNameInDir(char directory[], char fileName[]);
+ * --
  */
 
 #ifndef MARIO_SOKOBAN_FILE_HELPER_H
@@ -23,15 +26,6 @@
  */
 int getNbFileInDir(char dirPath[], char fExt[]);
 
-
-/**
- * TO REMOVE OR REWIND
- * Initialize the filname structure to 0 ;
- * @param map Map An pointer on the Map structure .
- * @param nbInit Int The number of structure who need to initialize defined by the number of file found
- *                    by getNbFileInDir
- */
-void initMap(Map *map, int nbInit, int fLvl);
 
 
 /**
@@ -52,6 +46,23 @@ void setNameInMap(char dirPath[], char fExt[] ,Map *map);
  */
 void setContentByFileName(char dirPath[], Map *map);
 
+/**
+ * Save the map created by user in the directory in a file called by the filname send in parameter .
+ * @param directory char The path where store the new map according to the difficulty chosen .
+ * @param fileName char The name to save file .
+ * @param S_elem ELEMENT An pointer to the array of structure element .
+ * @param openMode  char A letter corresponding to the mode to open file .
+ */
+void saveMapInDir(char directory[], char fileName[], ELEMENT *S_elem, char openMode[]);
+
+
+/**
+ * Check if the name passed in parameter is the same to one another in a directory passed in parameter .
+ * @param directory char The path where we need to search .
+ * @param fileName char The name to search .
+ * @return int bool 1 if the name is already present 0 else .
+ */
+int checkFileNameInDir(char directory[], char fileName[]);
 
 //----------------------------------------------------------------------------------------------------------------------
 #endif //MARIO_SOKOBAN_FILE_HELPER_H

@@ -53,27 +53,6 @@ int getNbFileInDir(char dirPath[], char fExt[]){
 
 }
 
-/**
- * Initialize the filname structure to 0 ;
- * @param map Map An pointer on the Map structure .
- * @param nbInit Int The number of structure who need to initialize defined by the number of file found
- *                    by getNbFileInDir : if we found 3 file in a directory we create an array of Map structure .
- * @param int fLvl The number corresponding to the difficulty .
- */
-void initMap(Map *map, int nbInit, int fLvl){
-    for(int i = 0; i < nbInit; i++){
-
-        map[i].number = 0;
-        map[i].difficulty = fLvl;
-
-        for(int c = 0; c < 50; c++){
-            map[i].name[c] = 0;
-        }
-        for(int c = 0; c < 500; c++){
-            map[i].content[c] = 0;
-        }
-    }
-}
 
 /**
  * Set the Map structure value by the name we found in a directory passed in the paramèter .The number corresponding to
@@ -144,6 +123,68 @@ void setContentByFileName(char dirPath[], Map *map){
 
         fclose(file);
     }
+}
+
+/**
+ * Save the map created by user in the directory in a file called by the filname send in parameter .
+ * @param directory char The path where store the new map according to the difficulty chosen .
+ * @param fileName char The name to save file .
+ * @param S_elem ELEMENT An pointer to the array of structure element .
+ * @param openMode  char A letter corresponding to the mode to open file .
+ */
+void saveMapInDir(char directory[], char fileName[], ELEMENT *S_elem, char openMode[]){
+    char path[200] = "";
+    strcpy(path, directory);
+    strcat(path, fileName);
+    FILE *file = NULL;
+    file = fopen(path, openMode);
+    if(file != NULL){
+        // open
+        for(int i = 0; i < MAP_MAX_SIZE; i++){
+            if(i % 16 == 0 && i != 0){
+                fputc('\n', file);
+                continue;
+            }
+            fputc(S_elem[i].id, file);
+
+        }
+    } else{
+        fprintf(stderr, "Fatal Error on File in saveMapInDir");
+        SDL_Quit();
+        exit(EXIT_FAILURE);
+    }
+
+    // close
+    fclose(file);
+}
+
+/**
+ * Check if the name passed in parameter is the same to one another in a directory passed in parameter .
+ * @param directory char The path where we need to search .
+ * @param fileName char The name to search .
+ * @return int bool 1 if the name is already present 0 else .
+ */
+int checkFileNameInDir(char directory[], char fileName[]){
+    int same = 0;
+    DIR *rep = NULL;
+    struct dirent *fileRead = NULL;
+    rep = opendir(directory);
+    if(rep == NULL){
+        perror("");
+        exit(EXIT_FAILURE);
+    }
+    while((fileRead = readdir(rep)) != NULL){
+        // exculde the hide file
+        if(strcmp(fileRead->d_name, ".") != 0 && strcmp(fileRead->d_name, "..") != 0){
+            if(strcmp(fileRead->d_name, fileName) == 0){
+                same++;
+            }
+        }
+    }
+    // close dir
+    closedir(rep);
+    // return the number of file found .
+    return same;
 }
 
 

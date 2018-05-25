@@ -10,6 +10,8 @@
 #include "windows.h"
 #include "edition.h"
 #include "windows.h"
+#include "error_helper.h"
+#include "file_helper.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 /**
@@ -276,12 +278,14 @@ void gameStartEvent(){
  * @param tmpChoice int An pointer on the variable tmpChoice to tell continue or get out while .
  * @param nbObj int An pointer on the variable nbObjectif .
  */
-int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj){
+int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj, Map *mapCreated, char levelPath[]){
 
     SDL_Event event;
     int again = 1;
     int static numImage = 0;
+    int error = 0;
     int next = 0;
+    char debugPaht[200] = "";
     while(again){
         SDL_WaitEvent(&event);
         switch(event.type){
@@ -292,34 +296,32 @@ int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj)
                 switch(event.key.keysym.sym){
                     case SDLK_LEFT:
                         // check if we can access to left
-                        if(!setNextTarget(*cursor, 1, '-'))
+                        if(!setNextForEdit(*cursor, 1, '-'))
                             continue;
                         // set next target
-                        next = setNextTarget(*cursor, 1, '-');
+                        next = setNextForEdit(*cursor, 1, '-');
                         // change a color if just white frame
                         checkAndUpdatePathElement(elem, *cursor, next);
                         numImage = 0;
                         return  next;
                     case SDLK_RIGHT:
-                        if(!setNextTarget(*cursor, 1, '+'))
+                        if(!setNextForEdit(*cursor, 1, '+'))
                             continue;
-                        next = setNextTarget(*cursor, 1, '+');
+                        next = setNextForEdit(*cursor, 1, '+');
                         checkAndUpdatePathElement(elem, *cursor, next);
-
-                        //showChangeInMapEdit(pRootWindow, sElem, elem);
                         numImage = 0;
                         return next;
                     case SDLK_UP:
-                        if(!setNextTarget(*cursor, NB_FRAME_IN_LINE, '-'))
+                        if(!setNextForEdit(*cursor, NB_FRAME_IN_LINE, '-'))
                             continue;
-                        next = setNextTarget(*cursor, NB_FRAME_IN_LINE, '-');
+                        next = setNextForEdit(*cursor, NB_FRAME_IN_LINE, '-');
                         checkAndUpdatePathElement(elem, *cursor, next);
                         numImage = 0;
                         return next;
                     case SDLK_DOWN:
-                        if(!setNextTarget(*cursor, NB_FRAME_IN_LINE, '+'))
+                        if(!setNextForEdit(*cursor, NB_FRAME_IN_LINE, '+'))
                             continue;
-                        next = setNextTarget(*cursor, NB_FRAME_IN_LINE, '+');
+                        next = setNextForEdit(*cursor, NB_FRAME_IN_LINE, '+');
                         checkAndUpdatePathElement(elem, *cursor, next);
                         numImage = 0;
                         return next;
@@ -331,24 +333,34 @@ int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj)
                         checkElementInEditMap(elem, *nbObj, &numImage, *cursor);
                         if((numImage) == 0){
                             // the case 0 is a white frame so we set elem[*cursor].id to " " and pathImg to null
-                            elem[*cursor].id = 0;
+                            elem[*cursor].id = E_NULL;
                             strcpy(elem[*cursor].pathImg, "null");
                             numImage++;
-                            return 0;
+                            return -1;
 
                         } else{
                             // update the two interesting variable in elem .
                             elem[*cursor].id = getPathImage(numImage, elem[*cursor].pathImg);
                             numImage++;
-                            return 0;
+                            return -1;
                         }
                     case SDLK_F9:
                         again = 0;
                         *tmpChoice = 0;
                         break;
                     case SDLK_F10:
-                        // here need to save new map
+                        // here need to save new map but only if completed
+                        if(!checkIfMapIsCorrect(elem, *nbObj))
+                            continue;
+                        if(!checkIfBorderIsCorrect(elem))
+                            continue;
+                        if(!checkNumberOfFreeCase(elem))
+                            continue;
+                        if(checkFileNameInDir(levelPath, mapCreated->name))
+                            continue;
+                        saveMapInDir(levelPath, mapCreated->name, elem, "w+");
                         *tmpChoice = 0;
+                        return -1;
                     default:
                         continue;
                 }

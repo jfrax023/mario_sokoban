@@ -60,7 +60,7 @@ void gameEventManager(SDL_Surface *pRootWindow, SDL_Surface *sElem[], ELEMENT *e
  * @param tmpChoice int An pointer on the variable tmpChoice to tell continue or get out while .
  * @param nbObj int An pointer on the variable nbObjectif .
  */
-int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj);
+int editionEventManager(ELEMENT elem[], int *cursor, int *tmpChoice, int *nbObj, Map *mapCreated, char levelPath[]);
 
 
 //----------------------------------------------------------------------------------------------------------------------

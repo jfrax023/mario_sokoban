@@ -28,11 +28,16 @@ void diplayEditionMode(SDL_Surface *pRootWindow, int *menuChoice){
     int tmpChoice = 0;
     int nbObjectif = 0;
     int next = 0;
-    int cursor = 1;
+    int cursor = 0;
+    int ns = 0;
+    SDL_Rect posSurface;
+    posSurface.y = 0;
+    posSurface.x = 0;
     char levelPath[A_HALF_FIFTY] = "";
     SDL_Surface sElem[MAP_MAX_SIZE] = {0};
     ELEMENT S_Elem[MAP_MAX_SIZE] = {0};
     Map mapCreated = {0, 0, 0, 0, "", ""};
+    // end declaration
     createMenu(pRootWindow, &tmpChoice, LVL_MENU_PATH);
     // get out F9 at chose and need to back menu 1
     if(tmpChoice == 0){
@@ -41,22 +46,23 @@ void diplayEditionMode(SDL_Surface *pRootWindow, int *menuChoice){
     setDifficulty(tmpChoice, &lvlMode, levelPath);
     setNbObjectifByMode(lvlMode, &nbObjectif);
     cleanWindow(pRootWindow, 1);
-    for(int i = 0; i < MAP_MAX_SIZE; i++) {
-        setValueForMapToEdit(pRootWindow,  &sElem[i], &S_Elem[i], i, cursor);
+
+    for(int i = 0; i < MAP_MAX_SIZE; i++){
+        setValueForMapToEdit(pRootWindow,  &sElem[i], &S_Elem[i], i, cursor, &posSurface);
     }
+
     SDL_Flip(pRootWindow);
     initMapStructForEdit(&mapCreated, lvlMode);
     while(tmpChoice != 0){
 
-        next = editionEventManager(S_Elem, &cursor, &tmpChoice, &nbObjectif);
-        cleanWindow(pRootWindow, 1);
+        next = editionEventManager(S_Elem, &cursor, &tmpChoice, &nbObjectif, &mapCreated, levelPath);
+        if(next != -1){
+            cursor = next;
+        }
+        cleanWindow(pRootWindow, 0);
         //cleanSurfaceEdit(sElem, MAP_MAX_SIZE);
         for(int i = 0; i < MAP_MAX_SIZE; i++){
             showChangeInMapEdit(pRootWindow, &sElem[i], &S_Elem[i]);
-        }
-        if(next != 0){
-
-            cursor = next;
         }
 
         SDL_Flip(pRootWindow);

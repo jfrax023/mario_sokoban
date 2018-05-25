@@ -71,6 +71,7 @@
 #define END_GAME_PATH "img/end_game.png"
 
 
+
 // define letter for elements
 #define E_WALL 'O'
 #define E_BOX 'A'
@@ -87,6 +88,11 @@
 #define LEVEL_EASY_DIR "levels/easy/"
 #define LEVEL_MEDIUM_DIR "levels/medium/"
 #define LEVEL_HARD_DIR "levels/hard/"
+// debug level path
+#define DEBUG_PATH "cmake-build-debug/"
+#define EASY_DEBUG_PATH "cmake-build-debug/levels/easy/"
+#define MEDIUM_DEBUG_PATH "cmake-build-debug/levels/medium/"
+#define HARD_DEBUG_PATH "cmake-build-debug/levels/hard/"
 
 // file extention
 #define E_TEXT ".txt"
@@ -95,6 +101,10 @@
 #define OBJ_EASY 3
 #define OBJ_MEDIUM 4
 #define OBJ_HARD 5
+
+// help edition
+#define NB_CASE_FREE_MIN 45
+
 // Structure definition
 /**
  * Just a simple enumeration where we list the difficulty possible .

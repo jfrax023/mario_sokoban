@@ -124,9 +124,8 @@ void copyMap(Map *MapToPlay, Map copy){
 void initMapStructForEdit(Map *pEditMap, int difficulty){
     srand(time(NULL));
     int num1 = rand();
-    int num2 = rand();
     char name[A_HALF_HUNDR] = "";
-    sprintf(name, "%dspe%d.txt", num1, num2);
+    sprintf(name, "%dspecial.txt", num1);
     strcpy(pEditMap->name, name);
     pEditMap->number = 0;
     pEditMap->next = 0;

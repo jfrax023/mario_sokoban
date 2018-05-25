@@ -13,12 +13,17 @@
 ## Edition Rules :  
     
     You can create a map directly in a game by using the game map editor .You
-    can access it in the first menu .  
+    can access it in the first menu . At the moment you can only create a new map
+    not editing an exitent map .  
     
-    * Use a arrow key in you keyboard to travel in frame    
-    * Use backspace to move elements by elements       
+    * Use a arrow key in your keyboard to travel in frame    
+    * Use space to move elements by elements       
     * Use F9 to get back first menu   
-    * Use F10 to save current map . (in progress)  
+    * Use F10 to save current map .    
+    * Is mendatory to put only mario, wall or objective in the last frame  
+        of every ligne to represent the border of map (last right case).
+    * Is mendatory to have same objectives and caisse than the level you have chosen .  
+    * The map name is automatically created .  
     
 ## Menu  
     
